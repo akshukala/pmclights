@@ -1,0 +1,1195 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block content %}
+    <style type="text/css">
+        ul.ui-autocomplete {
+                z-index: 1100;
+            }
+    </style>
+        <br><br><br><br>
+        <div class="container">
+             <div class="col-md-12">
+                <div class="tabs">
+                    <ul class="nav nav-tabs nav-justified">
+                        <li class="active"><a href="#tab1-1" data-toggle="tab"><i class="icon-star"></i><b>CREATE FEEDER</b></a></li>
+                        <li><a href="#tab1-2" data-toggle="tab"><b>EDIT FEEDER</b></a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="tab1-1">
+                            <br><br>
+                            <div class="row">
+                                <div class="col-md-8 col-md-offset-2">
+                                    <div class="errors"></div>
+                                    <div class="panel panel-primary">
+                                        <div class="panel-body">
+                                            <div class="row">
+                                                <div class="col-md-6 text-center">
+                                                    <button class="btn btn-primary" data-toggle="modal" data-target="#divisionModal" id='div_btn'>Create Division</button>
+                                                </div>
+                                                <div class="col-md-6 text-center">
+                                                    <button class="btn btn-primary" data-toggle="modal" data-target="#subdivisionModal" id='subdiv_btn'>Create Sub-Division</button>
+                                                </div>
+                                                <!-- <div class="col-md-4">
+                                                    <input type="text" class="form-control input-md" placeholder="Select Feeder" id="sel_feeder" required>
+                                                </div> -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-10 col-md-offset-1">
+                                    <div class="panel panel-primary">
+                                        <div class="panel-heading text-center"><h4 id="create_feeder">CREATE FEEDER</h4></div>
+                                        <div class="panel-body">
+                                            <div class="row">
+                                                <input type="hidden" id="feederid" name="feederid" value="No Id">
+                                                <div class="col-md-2 col-md-offset-1">
+                                                    <div class="form-group">
+                                                        <label>Division:</label>
+                                                        <input type="text" class="form-control input-md" id="division" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label>Sub-division:</label>
+                                                        <input type="text" class="form-control input-md ac_subdiv" id="subdivision" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label>Feeder:</label>
+                                                        <input type="text" class="form-control" maxlength="10" id="feeder" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label>Latitude:</label>
+                                                        <input type="text" class="form-control" id="feeder_lat" placeholder="eg. 18.5204303" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label>Longitude:</label>
+                                                        <input type="text" class="form-control" id="feeder_long" placeholder="eg. 73.8567437" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <hr>
+                                            <div class="row">
+                                                <div class="col-md-2 col-xs-offset-1">
+                                                    <label>R PH-CT RATIO:</label>
+                                                    <table class="table table-striped table-bordered table-condensed table-responsive">
+                                                        <tr>
+                                                           <td><input type="text" class="form-control" id="rph_1" placeholder="03" required></td>
+                                                           <td><input type="text" class="form-control" id="rph_2" placeholder="23" required></td> 
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label>R Voltage Upper Limit:</label>
+                                                        <input type="text" class="form-control" id="r_voltageupperlimit" placeholder="eg. 230" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label>R Voltage Lower Limit:</label>
+                                                        <input type="text" class="form-control" id="r_voltagelowerlimit" placeholder="eg. 230" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label>R Current Upper Limit:</label>
+                                                        <input type="text" class="form-control" id="r_currentupperlimit" placeholder="eg. 230" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label>R Current Lower Limit:</label>
+                                                        <input type="text" class="form-control" id="r_currentlowerlimit" placeholder="eg. 230" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <hr>
+                                            <div class="row">
+                                                <div class="col-md-2 col-md-offset-1">
+                                                    <div class="form-group">
+                                                        <label>Y PH-CT RATIO:</label>
+                                                        <table class="table table-striped table-bordered table-condensed table-responsive">
+                                                        <tr>
+                                                           <td><input type="text" class="form-control" id="yph_1" placeholder="03" required></td>
+                                                           <td><input type="text" class="form-control" id="yph_2" placeholder="23" required></td> 
+                                                        </tr>
+                                                    </table>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label>Y Voltage Upper Limit:</label>
+                                                        <input type="text" class="form-control" id="y_voltageupperlimit" placeholder="eg. 230" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label>Y Voltage Lower Limit:</label>
+                                                        <input type="text" class="form-control" id="y_voltagelowerlimit" placeholder="eg. 230" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label>Y Current Upper Limit:</label>
+                                                        <input type="text" class="form-control" id="y_currentupperlimit" placeholder="eg. 230" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label>Y Current Lower Limit:</label>
+                                                        <input type="text" class="form-control" id="y_currentlowerlimit" placeholder="eg. 230" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <hr>
+                                            <div class="row">
+                                                <div class="col-md-2 col-md-offset-1">
+                                                    <div class="form-group">
+                                                        <label>B PH-CT RATIO:</label>
+                                                        <table class="table table-striped table-bordered table-condensed table-responsive">
+                                                        <tr>
+                                                           <td><input type="text" class="form-control" id="bph_1" placeholder="03" required></td>
+                                                           <td><input type="text" class="form-control" id="bph_2" placeholder="23" required></td> 
+                                                        </tr>
+                                                    </table>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label>B Voltage Upper Limit:</label>
+                                                        <input type="text" class="form-control" id="b_voltageupperlimit" placeholder="eg. 230" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label>B Voltage Lower Limit:</label>
+                                                        <input type="feeder" class="form-control" id="b_voltagelowerlimit" placeholder="eg. 230" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label>B Current Upper Limit:</label>
+                                                        <input type="text" class="form-control" id="b_currentupperlimit" placeholder="eg. 230" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label>B Current Lower Limit:</label>
+                                                        <input type="text" class="form-control" id="b_currentlowerlimit" placeholder="eg. 230" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group"> 
+                                                <div class="text-center"><button id="savedata_btn" class="btn btn-primary">CREATE</button></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="tab1-2">
+                            <div id="map_wrapper">
+                                  <br><br>
+                            <div class="row">
+                                <div class="col-md-8 col-md-offset-2">
+                                    <div class="errors"></div>
+                                    <div class="panel panel-primary">
+                                        <div class="panel-body">
+                                            <div class="row">
+                                               <!--  <div class="col-md-4">
+                                                    <button class="btn btn-primary" data-toggle="modal" data-target="#divisionModal" id='div_btn'>Create Division</button>
+                                                </div> -->
+                                                <div class="col-md-6 text-center">
+                                                   <label>Serach Feeder</label>
+                                                </div>
+                                                <div class="col-md-6 text-center">
+                                                    <input type="text" class="form-control input-md" placeholder="Select Feeder" id="sel_feeder" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-10 col-md-offset-1">
+                                    <div class="panel panel-primary">
+                                        <div class="panel-heading text-center"><h4 id="create_feeder">EDIT FEEDER</h4></div>
+                                        <div class="panel-body">
+                                            <div class="row">
+                                                <input type="hidden" id="feederid" name="feederid" value="No Id">
+                                                <div class="col-md-2 col-md-offset-1">
+                                                    <div class="form-group">
+                                                        <label>Division:</label>
+                                                        <input type="text" class="form-control input-md" id="edit_division" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label>Sub-division:</label>
+                                                        <input type="text" class="form-control input-md ac_subdiv" id="edit_subdivision" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label>Feeder:</label>
+                                                        <input type="text" class="form-control" maxlength="10" id="edit_feeder" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label>Latitude:</label>
+                                                        <input type="text" class="form-control" id="edit_feeder_lat" placeholder="eg. 18.5204303" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label>Longitude:</label>
+                                                        <input type="text" class="form-control" id="edit_feeder_long" placeholder="eg. 73.8567437" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <hr>
+                                            <div class="row">
+                                                <div class="col-md-2 col-xs-offset-1">
+                                                    <label>R PH-CT RATIO:</label>
+                                                    <table class="table table-striped table-bordered table-condensed table-responsive">
+                                                        <tr>
+                                                           <td><input type="text" class="form-control" id="edit_rph_1" placeholder="03" required></td>
+                                                           <td><input type="text" class="form-control" id="edit_rph_2" placeholder="23" required></td> 
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label>R Voltage Upper Limit:</label>
+                                                        <input type="text" class="form-control" id="edit_r_voltageupperlimit" placeholder="eg. 230" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label>R Voltage Lower Limit:</label>
+                                                        <input type="text" class="form-control" id="edit_r_voltagelowerlimit" placeholder="eg. 230" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label>R Current Upper Limit:</label>
+                                                        <input type="text" class="form-control" id="edit_r_currentupperlimit" placeholder="eg. 230" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label>R Current Lower Limit:</label>
+                                                        <input type="text" class="form-control" id="edit_r_currentlowerlimit" placeholder="eg. 230" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <hr>
+                                            <div class="row">
+                                                <div class="col-md-2 col-md-offset-1">
+                                                    <div class="form-group">
+                                                        <label>Y PH-CT RATIO:</label>
+                                                        <table class="table table-striped table-bordered table-condensed table-responsive">
+                                                        <tr>
+                                                           <td><input type="text" class="form-control" id="edit_yph_1" placeholder="03" required></td>
+                                                           <td><input type="text" class="form-control" id="edit_yph_2" placeholder="23" required></td> 
+                                                        </tr>
+                                                    </table>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label>Y Voltage Upper Limit:</label>
+                                                        <input type="text" class="form-control" id="edit_y_voltageupperlimit" placeholder="eg. 230" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label>Y Voltage Lower Limit:</label>
+                                                        <input type="text" class="form-control" id="edit_y_voltagelowerlimit" placeholder="eg. 230" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label>Y Current Upper Limit:</label>
+                                                        <input type="text" class="form-control" id="edit_y_currentupperlimit" placeholder="eg. 230" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label>Y Current Lower Limit:</label>
+                                                        <input type="text" class="form-control" id="edit_y_currentlowerlimit" placeholder="eg. 230" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <hr>
+                                            <div class="row">
+                                                <div class="col-md-2 col-md-offset-1">
+                                                    <div class="form-group">
+                                                        <label>B PH-CT RATIO:</label>
+                                                        <table class="table table-striped table-bordered table-condensed table-responsive">
+                                                        <tr>
+                                                           <td><input type="text" class="form-control" id="edit_bph_1" placeholder="03" required></td>
+                                                           <td><input type="text" class="form-control" id="edit_bph_2" placeholder="23" required></td> 
+                                                        </tr>
+                                                    </table>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label>B Voltage Upper Limit:</label>
+                                                        <input type="text" class="form-control" id="edit_b_voltageupperlimit" placeholder="eg. 230" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label>B Voltage Lower Limit:</label>
+                                                        <input type="feeder" class="form-control" id="edit_b_voltagelowerlimit" placeholder="eg. 230" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label>B Current Upper Limit:</label>
+                                                        <input type="text" class="form-control" id="edit_b_currentupperlimit" placeholder="eg. 230" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label>B Current Lower Limit:</label>
+                                                        <input type="text" class="form-control" id="edit_b_currentlowerlimit" placeholder="eg. 230" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group"> 
+                                                <div class="text-center"><button id="edit_savedata_btn" class="btn btn-primary">UPDATE</button></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>    
+        <!--Division Modal -->
+        <div class="modal fade" data-backdrop="static" data-keyboard="false" id="divisionModal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">Create Division</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="errors_modal"></div>
+                                <div class="form-group form-inline text-center">
+                                    <div class="col-md-6">
+                                        <label>Division Name:</label>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input id="division_name"  placeholder="Select Division" class="form-control input-md ac_div" type="text">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="save_division" class="btn btn-primary">Save changes</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!--Sub-Division Modal -->
+        
+        <div class="modal fade" data-backdrop="static" data-keyboard="false" id="subdivisionModal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">Create Sub-Division</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                          <div class="errors_subdivision_modal"></div>
+                            <div class="col-md-6">
+                                <div class="form-group form-inline">
+                                    <label>Division Name:</label>
+                                    <input type="text" id="select_division" class="form-control input-md">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group form-inline">
+                                    <label>Sub-Division Name:</label>
+                                    <input id="subdivision_name" class="form-control input-md " type="text">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="save_subdivision" class="btn btn-primary">Save changes</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+          
+    <script type="text/javascript">
+        var t = $('#user_table').DataTable({
+            "pageLength": 5
+        });
+        var alarm_table = $("#sms_table").DataTable({
+            "pageLength": 5
+        });
+        $(document).ready(function() {
+            $("#division").autocomplete({
+                source: function(request, response) {
+                    $.ajax({
+                        url: "/getDivision/",
+                        type : "get",
+                        headers: {'content_type':'application/json'},
+                        dataType: 'json',
+                        data :{
+                            "term": request.term
+                        },
+                        success:function(data){
+                            response(data["content"]);
+                        }
+                    });
+                },
+                change: function(event,ui){
+                    if (ui.item==null){
+                            $("#division").val('');
+                            $("#division").focus();
+                        }
+                    }
+            });
+            
+             $("#select_division").autocomplete({
+                source: function(request, response) {
+                    
+                    $.ajax({
+                        url: "/getDivision/",
+                        type : "get",
+                        headers: {'content_type':'application/json'},
+                        dataType: 'json',
+                        data :{
+                            "term": request.term
+                        },
+                        success:function(data){
+                            response(data["content"]);
+                        }
+                    });
+                },
+                change: function(event,ui){
+                    if (ui.item==null){
+                            $("#select_division").val('');
+                            $("#select_division").focus();
+                        }
+                    }
+            });
+            
+            $(".ac_subdiv").autocomplete({
+                source: function(request, response) {
+                    
+                    $.ajax({
+                        url: "/getSubDivision/",
+                        type : "get",
+                        headers: {'content_type':'application/json'},
+                        dataType: 'json',
+                        data :{
+                            "term": request.term,
+                            "division": $('#division').val()
+                        },
+                        success:function(data){
+                            var division_id = $('#division').val(); 
+                            localStorage.setItem("division", division_id);
+                            response(data["content"]);
+                        }
+                    });
+                },
+                change: function(event,ui){
+                    if (ui.item==null){
+                            $("#sub-division").val('');
+                            $("#sub-division").focus();
+                        }
+                    }
+            });
+
+            $("#sel_feeder").autocomplete({
+                source: function(request, response) {
+                    
+                    $.ajax({
+                        url: "/getOnlyFeeder/",
+                        type : "get",
+                        headers: {'content_type':'application/json'},
+                        dataType: 'json',
+                        data :{
+                            "term": request.term
+                        },
+                        success:function(data){
+                            console.log(data);
+                            response(data["content"]);
+                        }
+                    });
+                },
+                change: function(event,ui){
+                    if (ui.item==null){
+                            $("#select_division").val('');
+                            $("#select_division").focus();
+                        }
+                    }
+            });
+            
+            $("#sel_feeder").keyup(function(event){
+                if(event.keyCode == 13){
+                    var feedername = $("#sel_feeder").val().trim();
+                    $.ajax(
+                        {
+                            type:'get',
+                            url: "/getFeederInfo/?feeder_name="+feedername,
+                            headers: {'content_type':'application/json'},
+                            dataType: 'json',
+                            success : function(result)
+                                    {   
+                                        var feederdata = result['content'];
+                                        $("#edit_division").val(feederdata['div_name']);
+                                        $("#edit_subdivision").val(feederdata['subdiv_name']);
+                                        $("#edit_feeder").val(feederdata['feeder_name']);
+                                        $("#edit_feeder_lat").val(feederdata['latitude']);
+                                        $("#edit_feeder_long").val(feederdata['longitude']);
+                                        var rph = feederdata['rct_ratio'].split('/');
+                                        $("#edit_rph_1").val(rph[0]);
+                                        $("#edit_rph_2").val(rph[1]);
+                                        $("#edit_r_voltageupperlimit").val(feederdata['r_volt_ul']);
+                                        $("#edit_r_voltagelowerlimit").val(feederdata['r_volt_ll']);
+                                        $("#edit_r_currentupperlimit").val(feederdata['r_current_ul']);
+                                        $("#edit_r_currentlowerlimit").val(feederdata['r_current_ll']);
+                                        var yph = feederdata['rct_ratio'].split('/');
+                                        $("#edit_yph_1").val(yph[0]);
+                                        $("#edit_yph_2").val(yph[1]);
+                                        $("#edit_y_voltageupperlimit").val(feederdata['y_volt_ul']);
+                                        $("#edit_y_voltagelowerlimit").val(feederdata['y_volt_ll']);
+                                        $("#edit_y_currentupperlimit").val(feederdata['y_current_ul']);
+                                        $("#edit_y_currentlowerlimit").val(feederdata['y_current_ll']);
+                                        var bph = feederdata['rct_ratio'].split('/');
+                                        $("#edit_bph_1").val(bph[0]);
+                                        $("#edit_bph_2").val(bph[1]);
+                                        $("#edit_b_voltageupperlimit").val(feederdata['b_volt_ul']);
+                                        $("#edit_b_voltagelowerlimit").val(feederdata['b_volt_ll']);
+                                        $("#edit_b_currentupperlimit").val(feederdata['b_current_ul']);
+                                        $("#edit_b_currentlowerlimit").val(feederdata['b_current_ll']);
+                                        $("#edit_savedata_btn").text("Save Changes");
+                                        // $("#create_feeder").html("Edit Feeder");
+                                        $("#feederid").val(feederdata['feeder_id']);
+                                    },
+                            error : function(error)
+                                    {
+                                        window.alert(error['responseText'])
+                                    }
+                        });
+                }
+            });
+
+            $( "#savedata_btn" ).click(function() {
+                var errors=[];
+                var ratio_regex=/^\d{2}$/;
+                var cv_regex=/^\d{3}$/;
+                var feeder_regex=/^\d{10}$/;
+                var division = $("#division").val();
+                var subdivision = $("#subdivision").val();
+                var feeder = $("#feeder").val();
+                var latitude = $("#feeder_lat").val().trim();
+                var longitude = $("#feeder_long").val().trim();
+                var rph1 = $("#rph_1").val().trim();
+                var rph2 = $("#rph_2").val().trim();
+                var rph = rph1+"/"+rph2;
+                var r_vol_ul = $("#r_voltageupperlimit").val().trim();
+                var r_vol_ll = $("#r_voltagelowerlimit").val().trim();
+                var r_curr_ul = $("#r_currentupperlimit").val().trim();
+                var r_curr_ll = $("#r_currentlowerlimit").val().trim();
+                var yph1 = $("#yph_1").val().trim();
+                var yph2 = $("#yph_2").val().trim();
+                var yph = yph1 + "/" + yph2;
+                var y_vol_ul = $("#y_voltageupperlimit").val().trim();
+                var y_vol_ll = $("#y_voltagelowerlimit").val().trim();
+                var y_curr_ul = $("#y_currentupperlimit").val().trim();
+                var y_curr_ll = $("#y_currentlowerlimit").val().trim();
+                var bph1 = $("#bph_1").val().trim();
+                var bph2 = $("#bph_2").val().trim();
+                var bph = bph1 + "/" + bph2;
+                var b_vol_ul = $("#b_voltageupperlimit").val().trim();
+                var b_vol_ll = $("#b_voltagelowerlimit").val().trim();
+                var b_curr_ul = $("#b_currentupperlimit").val().trim();
+                var b_curr_ll = $("#b_currentlowerlimit").val().trim();
+                var feederid = $("#feederid").val();
+                $("#division").css({"border-color": "#ccc"});
+                $("#subdivision").css({"border-color": "#ccc"});
+                $("#feeder").css({"border-color": "#ccc"});
+                $("#rph_1").css({"border-color": "#ccc"});
+                $("#rph_2").css({"border-color": "#ccc"});
+                $("#r_voltageupperlimit").css({"border-color": "#ccc"});
+                $("#r_voltagelowerlimit").css({"border-color": "#ccc"});
+                $("#r_currentupperlimit").css({"border-color": "#ccc"});
+                $("#r_currentlowerlimit").css({"border-color": "#ccc"});
+                $("#yph_1").css({"border-color": "#ccc"});
+                $("#yph_2").css({"border-color": "#ccc"});
+                $("#y_voltageupperlimit").css({"border-color": "#ccc"});
+                $("#y_voltagelowerlimit").css({"border-color": "#ccc"});
+                $("#y_currentupperlimit").css({"border-color": "#ccc"});
+                $("#y_currentlowerlimit").css({"border-color": "#ccc"});
+                $("#bph_1").css({"border-color": "#ccc"});
+                $("#bph_2").css({"border-color": "#ccc"});
+                $("#b_voltageupperlimit").css({"border-color": "#ccc"});
+                $("#b_voltagelowerlimit").css({"border-color": "#ccc"});
+                $("#b_currentupperlimit").css({"border-color": "#ccc"});
+                $("#b_currentlowerlimit").css({"border-color": "#ccc"});
+
+                if (division.length == 0) {
+                        errors[errors.length] = "Enter Division Name.";
+                        $("#division").css({"border-color": "#ff4c4c"});
+                        $("#division").focus();
+                    }
+                if (subdivision.length == 0) {
+                        errors[errors.length] = "Enter Sub-Division Name.";
+                        $("#subdivision").css({"border-color": "#ff4c4c"});
+                        $("#subdivision").focus();
+                    }
+                if (feeder.length != 10 || feeder.length == 0) {
+                        errors[errors.length] = "Enter Feeder Name.";
+                        $("#feeder").css({"border-color": "#ff4c4c"});
+                        $("#feeder").focus();
+                    }
+                if (!rph1.match(ratio_regex) || rph1.length == 0) {
+                        errors[errors.length] = "Enter R PH CT Ratio.";
+                        $("#rph_1").css({"border-color": "#ff4c4c"});
+                        $("#rph_1").focus();
+                    }
+                if (!rph2.match(ratio_regex) || rph2.length == 0) {
+                        errors[errors.length] = "Enter R PH CT Ratio.";
+                        $("#rph_2").css({"border-color": "#ff4c4c"});
+                        $("#rph_2").focus();
+                    }
+                if (!r_vol_ul.match(cv_regex) || r_vol_ul.length == 0) {
+                        errors[errors.length] = "Enter R Voltage Upper Limit.";
+                        $("#r_voltageupperlimit").css({"border-color": "#ff4c4c"});
+                        $("#r_voltageupperlimit").focus();
+                    }
+                if (!r_vol_ll.match(cv_regex) || r_vol_ll.length == 0) {
+                        errors[errors.length] = "Enter R Voltage Lower Limit.";
+                        $("#r_voltagelowerlimit").css({"border-color": "#ff4c4c"});
+                        $("#r_voltagelowerlimit").focus();
+                    }
+                if (!r_curr_ul.match(cv_regex) || r_curr_ul.length == 0) {
+                        errors[errors.length] = "Enter Current Upper Limit.";
+                        $("#r_currentupperlimit").css({"border-color": "#ff4c4c"});
+                        $("#r_currentupperlimit").focus();
+                    }
+                if (!r_curr_ll.match(cv_regex) || r_curr_ll.length == 0) {
+                        errors[errors.length] = "Enter Current Lower Limit.";
+                        $("#r_currentlowerlimit").css({"border-color": "#ff4c4c"});
+                        $("#r_currentlowerlimit").focus();
+                    }
+                if (!yph1.match(ratio_regex) || yph1.length == 0) {
+                        errors[errors.length] = "Enter Y PH CT Ratio.";
+                        $("#yph_1").css({"border-color": "#ff4c4c"});
+                        $("#yph_1").focus();
+                    }
+                if (!yph2.match(ratio_regex) || yph2.length == 0) {
+                        errors[errors.length] = "Enter Y PH CT Ratio.";
+                        $("#yph_2").css({"border-color": "#ff4c4c"});
+                        $("#yph_2").focus();
+                    }
+                if (!y_vol_ul.match(cv_regex) || y_vol_ul.length == 0) {
+                        errors[errors.length] = "Enter Y Voltage Upper Limit.";
+                        $("#y_voltageupperlimit").css({"border-color": "#ff4c4c"});
+                        $("#y_voltageupperlimit").focus();
+                    }
+                if (!y_vol_ll.match(cv_regex) || y_vol_ll.length == 0) {
+                        errors[errors.length] = "Enter Y Voltage Lower Limit";
+                        $("#y_voltagelowerlimit").css({"border-color": "#ff4c4c"});
+                        $("#y_voltagelowerlimit").focus();
+                    }
+                if (!y_curr_ul.match(cv_regex) || y_curr_ul.length == 0) {
+                        errors[errors.length] = "Enter Y Current Upper Limit.";
+                        $("#y_currentupperlimit").css({"border-color": "#ff4c4c"});
+                        $("#y_currentupperlimit").focus();
+                    }
+                if (!y_curr_ll.match(cv_regex) || y_curr_ll.length == 0) {
+                        errors[errors.length] = "Enter Y Current Lower Limit.";
+                        $("#y_currentlowerlimit").css({"border-color": "#ff4c4c"});
+                        $("#y_currentlowerlimit").focus();
+                    }
+                if (!bph1.match(ratio_regex) || bph1.length == 0) {
+                        errors[errors.length] = "Enter B PH CT Ratio.";
+                        $("#bph_1").css({"border-color": "#ff4c4c"});
+                        $("#bph_1").focus();
+                    }
+                if (!bph2.match(ratio_regex) || bph2.length == 0) {
+                        errors[errors.length] = "Enter B PH CT Ratio.";
+                        $("#bph_2").css({"border-color": "#ff4c4c"});
+                        $("#bph_2").focus();
+                    }
+                if (!b_vol_ul.match(cv_regex) || b_vol_ul.length == 0) {
+                        errors[errors.length] = "Enter B Voltage Upper Limit.";
+                        $("#b_voltageupperlimit").css({"border-color": "#ff4c4c"});
+                        $("#b_voltageupperlimit").focus();
+                    }
+                if (!b_vol_ll.match(cv_regex) || b_vol_ll.length == 0) {
+                        errors[errors.length] = "Enter B Voltage Lower Limit.";
+                        $("#b_voltagelowerlimit").css({"border-color": "#ff4c4c"});
+                        $("#b_voltagelowerlimit").focus();
+                    }
+                if (!b_curr_ul.match(cv_regex) || b_curr_ul.length == 0) {
+                        errors[errors.length] = "Enter B Current Upper Limit.";
+                        $("#b_currentupperlimit").css({"border-color": "#ff4c4c"});
+                        $("#b_currentupperlimit").focus();
+                    }
+                if (!b_curr_ll.match(cv_regex) || b_curr_ll.length == 0) {
+                        errors[errors.length] = "Enter B Current Lower Limit.";
+                        $("#b_currentlowerlimit").css({"border-color": "#ff4c4c"});
+                        $("#b_currentlowerlimit").focus();
+                    }
+                 
+                if (errors.length > 0) {
+                        reportErrors(errors);
+                        return false;
+                    }
+                    
+                    $.ajax(
+                    {
+                        type:'post',
+                        url: "/post_data/",
+                        dataType: 'json',
+                        data: { 'div_name': division,
+                                'subdiv_name': subdivision,
+                                'feeder_name': feeder,
+                                'latitude': latitude,
+                                'longitude': longitude,
+                                'rph': rph,
+                                'r_vol_ul': r_vol_ul,
+                                'r_vol_ll': r_vol_ll,
+                                'r_curr_ul': r_curr_ul,
+                                'r_curr_ll': r_curr_ll,
+                                'yph': yph,
+                                'y_vol_ul': y_vol_ul,
+                                'y_vol_ll': y_vol_ll,
+                                'y_curr_ul': y_curr_ul,
+                                'y_curr_ll': y_curr_ll,
+                                'bph': bph,
+                                'b_vol_ul': b_vol_ul,
+                                'b_vol_ll': b_vol_ll,
+                                'b_curr_ul': b_curr_ul,
+                                'b_curr_ll': b_curr_ll,
+                                'feederid': feederid
+                                },
+                        success : function(data)
+                            {   
+                               
+                                if (data['content']['responseCode'] == 200) {
+                                    var message;
+                                    message = data['content']['Message'];
+                                    swal({
+                                        title: "Success!!!",
+                                        text: message,
+                                        type: "success",
+                                    },
+                                    function(){
+                                        location.reload();
+                                    });
+                                }else {
+                                    var message;
+                                    message = data['content']['Message'];
+                                    swal("Error!!!", message, "error");
+                                }
+                                console.log(data)
+                                
+                            },
+                        error : function(error)
+                                {
+                                    window.alert(error['responseText'])
+                                }
+                    });
+            });
+            $( "#edit_savedata_btn" ).click(function() {
+                var errors=[];
+                var ratio_regex=/^\d{2}$/;
+                var cv_regex=/^\d{3}$/;
+                var feeder_regex=/^\d{10}$/;
+                var division = $("#edit_division").val();
+                var subdivision = $("#edit_subdivision").val();
+                var feeder = $("#edit_feeder").val();
+                var latitude = $("#edit_feeder_lat").val().trim();
+                var longitude = $("#edit_feeder_long").val().trim();
+                var rph1 = $("#edit_rph_1").val().trim();
+                var rph2 = $("#edit_rph_2").val().trim();
+                var rph = rph1+"/"+rph2;
+                var r_vol_ul = $("#edit_r_voltageupperlimit").val().trim();
+                var r_vol_ll = $("#edit_r_voltagelowerlimit").val().trim();
+                var r_curr_ul = $("#edit_r_currentupperlimit").val().trim();
+                var r_curr_ll = $("#edit_r_currentlowerlimit").val().trim();
+                var yph1 = $("#edit_yph_1").val().trim();
+                var yph2 = $("#edit_yph_2").val().trim();
+                var yph = yph1 + "/" + yph2;
+                var y_vol_ul = $("#edit_y_voltageupperlimit").val().trim();
+                var y_vol_ll = $("#edit_y_voltagelowerlimit").val().trim();
+                var y_curr_ul = $("#edit_y_currentupperlimit").val().trim();
+                var y_curr_ll = $("#edit_y_currentlowerlimit").val().trim();
+                var bph1 = $("#edit_bph_1").val().trim();
+                var bph2 = $("#edit_bph_2").val().trim();
+                var bph = bph1 + "/" + bph2;
+                var b_vol_ul = $("#edit_b_voltageupperlimit").val().trim();
+                var b_vol_ll = $("#edit_b_voltagelowerlimit").val().trim();
+                var b_curr_ul = $("#edit_b_currentupperlimit").val().trim();
+                var b_curr_ll = $("#edit_b_currentlowerlimit").val().trim();
+                var feederid = $("#feederid").val();
+                $("#edit_division").css({"border-color": "#ccc"});
+                $("#edit_subdivision").css({"border-color": "#ccc"});
+                $("#edit_feeder").css({"border-color": "#ccc"});
+                $("#edit_rph_1").css({"border-color": "#ccc"});
+                $("#edit_rph_2").css({"border-color": "#ccc"});
+                $("#edit_r_voltageupperlimit").css({"border-color": "#ccc"});
+                $("#edit_r_voltagelowerlimit").css({"border-color": "#ccc"});
+                $("#edit_r_currentupperlimit").css({"border-color": "#ccc"});
+                $("#edit_r_currentlowerlimit").css({"border-color": "#ccc"});
+                $("#edit_yph_1").css({"border-color": "#ccc"});
+                $("#edit_yph_2").css({"border-color": "#ccc"});
+                $("#edit_y_voltageupperlimit").css({"border-color": "#ccc"});
+                $("#edit_y_voltagelowerlimit").css({"border-color": "#ccc"});
+                $("#edit_y_currentupperlimit").css({"border-color": "#ccc"});
+                $("#edit_y_currentlowerlimit").css({"border-color": "#ccc"});
+                $("#edit_bph_1").css({"border-color": "#ccc"});
+                $("#edit_bph_2").css({"border-color": "#ccc"});
+                $("#edit_b_voltageupperlimit").css({"border-color": "#ccc"});
+                $("#edit_b_voltagelowerlimit").css({"border-color": "#ccc"});
+                $("#edit_b_currentupperlimit").css({"border-color": "#ccc"});
+                $("#edit_b_currentlowerlimit").css({"border-color": "#ccc"});
+
+                if (division.length == 0) {
+                        errors[errors.length] = "Enter Division Name.";
+                        $("#edit_division").css({"border-color": "#ff4c4c"});
+                        $("#edit_division").focus();
+                    }
+                if (subdivision.length == 0) {
+                        errors[errors.length] = "Enter Sub-Division Name.";
+                        $("#edit_subdivision").css({"border-color": "#ff4c4c"});
+                        $("#edit_subdivision").focus();
+                    }
+                if (feeder.length != 10 || feeder.length == 0) {
+                        errors[errors.length] = "Enter Feeder Name.";
+                        $("#edit_feeder").css({"border-color": "#ff4c4c"});
+                        $("#edit_feeder").focus();
+                    }
+                if (!rph1.match(ratio_regex) || rph1.length == 0) {
+                        errors[errors.length] = "Enter R PH CT Ratio.";
+                        $("#edit_rph_1").css({"border-color": "#ff4c4c"});
+                        $("#edit_rph_1").focus();
+                    }
+                if (!rph2.match(ratio_regex) || rph2.length == 0) {
+                        errors[errors.length] = "Enter R PH CT Ratio.";
+                        $("#edit_rph_2").css({"border-color": "#ff4c4c"});
+                        $("#edit_rph_2").focus();
+                    }
+                if (!r_vol_ul.match(cv_regex) || r_vol_ul.length == 0) {
+                        errors[errors.length] = "Enter R Voltage Upper Limit.";
+                        $("#edit_r_voltageupperlimit").css({"border-color": "#ff4c4c"});
+                        $("#edit_r_voltageupperlimit").focus();
+                    }
+                if (!r_vol_ll.match(cv_regex) || r_vol_ll.length == 0) {
+                        errors[errors.length] = "Enter R Voltage Lower Limit.";
+                        $("#edit_r_voltagelowerlimit").css({"border-color": "#ff4c4c"});
+                        $("#edit_r_voltagelowerlimit").focus();
+                    }
+                if (!r_curr_ul.match(cv_regex) || r_curr_ul.length == 0) {
+                        errors[errors.length] = "Enter Current Upper Limit.";
+                        $("#edit_r_currentupperlimit").css({"border-color": "#ff4c4c"});
+                        $("#edit_r_currentupperlimit").focus();
+                    }
+                if (!r_curr_ll.match(cv_regex) || r_curr_ll.length == 0) {
+                        errors[errors.length] = "Enter Current Lower Limit.";
+                        $("#edit_r_currentlowerlimit").css({"border-color": "#ff4c4c"});
+                        $("#edit_r_currentlowerlimit").focus();
+                    }
+                if (!yph1.match(ratio_regex) || yph1.length == 0) {
+                        errors[errors.length] = "Enter Y PH CT Ratio.";
+                        $("#edit_yph_1").css({"border-color": "#ff4c4c"});
+                        $("#edit_yph_1").focus();
+                    }
+                if (!yph2.match(ratio_regex) || yph2.length == 0) {
+                        errors[errors.length] = "Enter Y PH CT Ratio.";
+                        $("#edit_yph_2").css({"border-color": "#ff4c4c"});
+                        $("#edit_yph_2").focus();
+                    }
+                if (!y_vol_ul.match(cv_regex) || y_vol_ul.length == 0) {
+                        errors[errors.length] = "Enter Y Voltage Upper Limit.";
+                        $("#edit_y_voltageupperlimit").css({"border-color": "#ff4c4c"});
+                        $("#edit_y_voltageupperlimit").focus();
+                    }
+                if (!y_vol_ll.match(cv_regex) || y_vol_ll.length == 0) {
+                        errors[errors.length] = "Enter Y Voltage Lower Limit";
+                        $("#edit_y_voltagelowerlimit").css({"border-color": "#ff4c4c"});
+                        $("#edit_y_voltagelowerlimit").focus();
+                    }
+                if (!y_curr_ul.match(cv_regex) || y_curr_ul.length == 0) {
+                        errors[errors.length] = "Enter Y Current Upper Limit.";
+                        $("#edit_y_currentupperlimit").css({"border-color": "#ff4c4c"});
+                        $("#edit_y_currentupperlimit").focus();
+                    }
+                if (!y_curr_ll.match(cv_regex) || y_curr_ll.length == 0) {
+                        errors[errors.length] = "Enter Y Current Lower Limit.";
+                        $("#edit_y_currentlowerlimit").css({"border-color": "#ff4c4c"});
+                        $("#edit_y_currentlowerlimit").focus();
+                    }
+                if (!bph1.match(ratio_regex) || bph1.length == 0) {
+                        errors[errors.length] = "Enter B PH CT Ratio.";
+                        $("#edit_bph_1").css({"border-color": "#ff4c4c"});
+                        $("#edit_bph_1").focus();
+                    }
+                if (!bph2.match(ratio_regex) || bph2.length == 0) {
+                        errors[errors.length] = "Enter B PH CT Ratio.";
+                        $("#edit_bph_2").css({"border-color": "#ff4c4c"});
+                        $("#edit_bph_2").focus();
+                    }
+                if (!b_vol_ul.match(cv_regex) || b_vol_ul.length == 0) {
+                        errors[errors.length] = "Enter B Voltage Upper Limit.";
+                        $("#edit_b_voltageupperlimit").css({"border-color": "#ff4c4c"});
+                        $("#edit_b_voltageupperlimit").focus();
+                    }
+                if (!b_vol_ll.match(cv_regex) || b_vol_ll.length == 0) {
+                        errors[errors.length] = "Enter B Voltage Lower Limit.";
+                        $("#edit_b_voltagelowerlimit").css({"border-color": "#ff4c4c"});
+                        $("#edit_b_voltagelowerlimit").focus();
+                    }
+                if (!b_curr_ul.match(cv_regex) || b_curr_ul.length == 0) {
+                        errors[errors.length] = "Enter B Current Upper Limit.";
+                        $("#edit_b_currentupperlimit").css({"border-color": "#ff4c4c"});
+                        $("#edit_b_currentupperlimit").focus();
+                    }
+                if (!b_curr_ll.match(cv_regex) || b_curr_ll.length == 0) {
+                        errors[errors.length] = "Enter B Current Lower Limit.";
+                        $("#edit_b_currentlowerlimit").css({"border-color": "#ff4c4c"});
+                        $("#edit_b_currentlowerlimit").focus();
+                    }
+                 
+                if (errors.length > 0) {
+                        reportErrors(errors);
+                        return false;
+                    }
+                    
+                    $.ajax(
+                    {
+                        type:'post',
+                        url: "/post_data/",
+                        dataType: 'json',
+                        data: { 'div_name': division,
+                                'subdiv_name': subdivision,
+                                'feeder_name': feeder,
+                                'latitude': latitude,
+                                'longitude': longitude,
+                                'rph': rph,
+                                'r_vol_ul': r_vol_ul,
+                                'r_vol_ll': r_vol_ll,
+                                'r_curr_ul': r_curr_ul,
+                                'r_curr_ll': r_curr_ll,
+                                'yph': yph,
+                                'y_vol_ul': y_vol_ul,
+                                'y_vol_ll': y_vol_ll,
+                                'y_curr_ul': y_curr_ul,
+                                'y_curr_ll': y_curr_ll,
+                                'bph': bph,
+                                'b_vol_ul': b_vol_ul,
+                                'b_vol_ll': b_vol_ll,
+                                'b_curr_ul': b_curr_ul,
+                                'b_curr_ll': b_curr_ll,
+                                'feederid': feederid
+                                },
+                        success : function(data)
+                            {   
+                                if (data['content']['responseCode'] == 200) {
+                                    var message;
+                                    message = data['content']['Message'];
+                                    swal({
+                                        title: "Success!!!",
+                                        text: message,
+                                        type: "success",
+                                    },
+                                    function(){
+                                        location.reload();
+                                    });
+                                }else {
+                                    var message;
+                                    message = data['content']['Message'];
+                                    swal("Error!!!", message, "error");
+                                }
+                                console.log(data)
+                            },
+                        error : function(error)
+                                {
+                                    window.alert(error['responseText'])
+                                }
+                    });
+            });
+            
+            $("#save_division").click(function(){
+                        var errors=[];
+                        var division_name = $("#division_name").val();
+                        $("#division_name").css({"border-color": "#ccc"});
+                        if (division_name.length == 0) {
+                                errors[errors.length] = "Enter Division Name.";
+                                $("#division_name").css({"border-color": "#ff4c4c"});
+                                $("#division_name").focus();
+                            }
+                        if (errors.length > 0) {
+                                reportErrorsModal(errors);
+                                return false;
+                            }
+                    $.ajax(
+                    {
+                        type:'post',
+                        url: "/post_division/",
+                        dataType: 'json',
+                        data: { 'division_name': division_name},
+                        success : function(data)
+                            {   
+                                if (data['content']['responseCode'] == 200) {
+                                    var message;
+                                    message = data['content']['Message'];
+                                    swal({
+                                        title: "Success!!!",
+                                        text: message,
+                                        type: "success",
+                                    },
+                                    function(){
+                                        location.reload();
+                                    });
+                                }else {
+                                    var message;
+                                    message = data['content']['Message'];
+                                    $("#division_name").val('');
+                                    swal("Error!!!", message, "error");
+                                }
+                                console.log(data)
+                                
+                            },
+                        error : function(error)
+                                {
+                                    window.alert(error['responseText'])
+                                }
+                            });
+                });
+                
+                 $("#save_subdivision").click(function(){
+                        var errors=[];
+                        var select_division = $("#select_division").val();
+                        var subdivision_name = $("#subdivision_name").val();
+
+                        $("#select_division").css({"border-color": "#ccc"});
+                        $("#subdivision_name").css({"border-color": "#ccc"});
+                        if (select_division.length == 0) {
+                                errors[errors.length] = "Enter Division Name.";
+                                $("#select_division").css({"border-color": "#ff4c4c"});
+                                $("#select_division").focus();
+                            }
+                        if (subdivision_name.length == 0) {
+                                errors[errors.length] = "Enter Sub-Division Name.";
+                                $("#subdivision_name").css({"border-color": "#ff4c4c"});
+                                $("#subdivision_name").focus();
+                            }
+                        if (errors.length > 0) {
+                                reportSubDivisionErrorsModal(errors);
+                                return false;
+                            }
+                    $.ajax(
+                    {
+                        type:'post',
+                        url: "/post_subdivision/",
+                        dataType: 'json',
+                        data: { 'division_name': select_division,
+                                'subdivision_name': subdivision_name},
+                        success : function(data)
+                            {   
+                                if (data['content']['responseCode'] == 200) {
+                                    var message;
+                                    message = data['content']['Message'];
+                                    swal({
+                                        title: "Success!!!",
+                                        text: message,
+                                        type: "success",
+                                    },
+                                    function(){
+                                        location.reload();
+                                    });
+                                }else {
+                                    var message;
+                                    message = data['content']['Message'];
+                                    $("#select_division").val('');
+                                    $("#subdivision_name").val('');
+                                    swal("Error!!!", message, "error");
+                                }
+                                console.log(data)
+                                
+                            },
+                        error : function(error)
+                                {
+                                    var message;
+                                    message = error['responseText'];
+                                    swal("error", message, "error");
+                                }
+                            });
+                });
+                
+                      
+                
+                function reportErrors(errors){
+                                $('.errors').empty();
+                                var msg = [];
+                                for (var i = 0; i<errors.length; i++) {
+                                    var numError = i + 1;
+                                    msg [i]= "\n" + numError + ". " + errors[i] ;
+                                }
+                                $.each(msg, function(){
+                                    $('.errors').append("<div class='alert alert-danger alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert'><span aria-hidden='true'>&times;</span><span class='sr-only'>Close</span></button>" + this +"</div>");
+                                });
+                        }
+                function reportErrorsModal(errors){
+                                $('.errors_modal').empty();
+                                var msg = [];
+                                for (var i = 0; i<errors.length; i++) {
+                                    var numError = i + 1;
+                                    msg [i]= "\n" + numError + ". " + errors[i] ;
+                                }
+                                $.each(msg, function(){
+                                    $('.errors_modal').append("<div class='alert alert-danger alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert'><span aria-hidden='true'>&times;</span><span class='sr-only'>Close</span></button>" + this +"</div>");
+                                });
+                        }
+                        
+                function reportSubDivisionErrorsModal(errors){
+                                $('.errors_subdivision_modal').empty();
+                                var msg = [];
+                                for (var i = 0; i<errors.length; i++) {
+                                    var numError = i + 1;
+                                    msg [i]= "\n" + numError + ". " + errors[i] ;
+                                }
+                                $.each(msg, function(){
+                                    $('.errors_subdivision_modal').append("<div class='alert alert-danger alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert'><span aria-hidden='true'>&times;</span><span class='sr-only'>Close</span></button>" + this +"</div>");
+                                });
+                        }
+         });        
+    </script>
+    {% endblock %}

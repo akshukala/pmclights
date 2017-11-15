@@ -1,0 +1,266 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block content %}
+    <style type="text/css">
+        .red_feed{
+            background-color: #ff0000;
+        }
+        .yellow_feed{
+            background-color: #FFEF00;
+        }
+        .blue_feed{
+            background-color: #4876FF;
+        }
+        .code-green{
+            background-color: green;
+            color: white;
+        }
+        .code-red{
+            background-color: red;
+            color: white;
+        }
+    </style>
+        <br><br>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1>Monitor</h1>
+                </div>
+            </div>
+            <div class="row" id="selected_data"></div>
+            <div class="row">
+                <div class="col-md-3">
+                    <input id="division" name="division" placeholder="Select Division" class="form-control input-md ac_div" type="text">
+                </div>
+                <div class="col-md-3">
+                    <input id="sub-divison" name="sub-divison" placeholder="Select Sub Division" class="form-control input-md ac_subdiv" type="text">
+                </div>
+                <div class="col-md-3">
+                    <input id="feeder" name="feeder" placeholder="Select Feeder" class="form-control input-md ac_feeder" type="text">
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group text-center">
+                        <button id="show_monitor" class="btn btn-primary">Change Feeder</button>
+                    </div>
+                </div>
+            </div>
+            
+            
+            <div class="row" id="feeder_detail"></div>
+            <div class="well"><div class="row" id="meter"></div></div>
+            <div class="row" id="feeder_data"></div>
+            <div class="row" id="dof"></div>
+        </div>
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+            if (localStorage.getItem("division") != null && localStorage.getItem("sub_division") != null && localStorage.getItem("feeder") != null) {
+                var div_id = localStorage.getItem("division");
+                var subdiv_id = localStorage.getItem("sub_division");
+                var feeder_id = localStorage.getItem("feeder");
+                console.log(div_id);
+                console.log(subdiv_id);
+                console.log(feeder_id);
+                $("#division").val(div_id);
+                $("#sub-divison").val(subdiv_id);
+                $("#feeder").val(feeder_id);
+                $("#feeder_data").empty();
+                $("#meter").empty();
+                $("#feeder_detail").empty();
+                $.ajax(
+                    {
+                        type:'get',
+                        url: "/getFeederData/?feeder_id="+feeder_id+"&subdivision_id="+subdiv_id+"&div_id="+div_id+"&type=1",
+                        headers: {'content_type':'application/json'},
+                        dataType: 'json',
+                        success : function(result)
+                                {   
+                                    console.log(result['content']);
+                                    populate_data(result['content']);
+                                },
+                        error : function(error)
+                                {
+                                    window.alert(error['responseText'])
+                                }
+                    });
+            }
+            else{
+                console.log("Not Set");
+            }
+
+
+            $(".ac_div").autocomplete({
+                source: function(request, response) {
+                    
+                    $.ajax({
+                        url: "/getDivision/",
+                        type : "get",
+                        headers: {'content_type':'application/json'},
+                        dataType: 'json',
+                        data :{
+                            "term": request.term
+                        },
+                        success:function(data){
+                            response(data["content"]);
+                        }
+                    });
+                },
+                change: function(event,ui){
+                    if (ui.item==null){
+                            $("#division").val('');
+                            $("#division").focus();
+                        }
+                    }
+            });
+
+            $(".ac_subdiv").autocomplete({
+                source: function(request, response) {
+                    
+                    $.ajax({
+                        url: "/getSubDivision/",
+                        type : "get",
+                        headers: {'content_type':'application/json'},
+                        dataType: 'json',
+                        data :{
+                            "term": request.term,
+                            "division": $('#division').val()
+                        },
+                        success:function(data){
+                            var division_id = $('#division').val(); 
+                            localStorage.setItem("division", division_id);
+                            response(data["content"]);
+                        }
+                    });
+                },
+                change: function(event,ui){
+                    if (ui.item==null){
+                            $("#sub-division").val('');
+                            $("#sub-division").focus();
+                        }
+                    }
+            });
+
+            $(".ac_feeder").autocomplete({
+                source: function(request, response) {
+                    
+                    $.ajax({
+                        url: "/getFeeder/",
+                        type : "get",
+                        headers: {'content_type':'application/json'},
+                        dataType: 'json',
+                        data :{
+                            "term": request.term,
+                            "division": $('#division').val(),
+                            "subdiv": $('#sub-divison').val()
+                        },
+                        success:function(data){
+                            var subdivision_id = $('#sub-divison').val();
+                            localStorage.setItem("sub_division", subdivision_id);
+                            response(data["content"]);
+                        }
+                    });
+                },
+                change: function(event,ui){
+                    if (ui.item==null){
+                            $("#feeder").val('');
+                            $("#feeder").focus();
+                        }
+                    }
+            });
+
+            $("#feeder").keyup(function(event){
+                if(event.keyCode == 13){
+                    $("#show_monitor").click();
+                }
+            });
+            
+            $("#show_monitor").click(function(){
+                    var div_id = $("#division").val();
+                    var subdiv_id = $("#sub-divison").val();
+                    var feeder_id = $("#feeder").val();
+                    localStorage.setItem("feeder", feeder_id);
+                    $.ajax(
+                    {
+                        type:'get',
+                        url: "/getFeederData/?feeder_id="+feeder_id+"&subdivision_id="+subdiv_id+"&div_id="+div_id+"&type=1",
+                        headers: {'content_type':'application/json'},
+                        dataType: 'json',
+                        success : function(result)
+                                {   
+                                    console.log(result['content']);
+                                    $("#feeder_data").empty();
+                                    $("#meter").empty();
+                                    $("#feeder_detail").empty();
+                                    populate_data(result['content']);
+                                },
+                        error : function(error)
+                                {
+                                    window.alert(error['responseText'])
+                                }
+                    });
+            });
+
+            $("#log_out").click(function(){
+                localStorage.clear();
+            });
+
+            function populate_data(result){
+                var data = '';
+                var meter_data = '';
+                var feeder_detail = '';
+                var r_bulb = '';
+                var y_bulb = '';
+                var b_bulb = '';
+                var r_fusestatus = '';
+                var y_fusestatus = '';
+                var b_fusestatus = '';
+                
+                if(result[0]['r_ff']){
+                    r_bulb += "<h2 class='text-center'>R-Phase<img src='/static/images/light_bulb_on-48.png'> - ON</h2>";
+                    r_fusestatus += "OK";
+                }
+                else{
+                    r_bulb += "<h2 class='text-center'>R-Phase<img src='/static/images/light_bulb_off-48.png'> - OFF</h2>";
+                    r_fusestatus += "BLOWN";   
+                }
+                if(result[0]['y_ff']){
+                    y_bulb += "<h2 class='text-center'>Y-Phase<img src='/static/images/light_bulb_on-48.png'> - ON</h2>";
+                    y_fusestatus += "OK";
+                }
+                else{
+                    y_bulb += "<h2 class='text-center'>Y-Phase<img src='/static/images/light_bulb_off-48.png'> - OFF</h2>";
+                    y_fusestatus += "BLOWN";   
+                }
+                if(result[0]['b_ff']){
+                    b_bulb += "<h2 class='text-center'>B-Phase<img src='/static/images/light_bulb_on-48.png'> - ON</h2>";
+                    b_fusestatus += "OK";
+                }
+                else{
+                    b_bulb += "<h2 class='text-center'>B-Phase<img src='/static/images/light_bulb_off-48.png'> - OFF</h2>";
+                    b_fusestatus += "BLOWN";   
+                }
+                if(result[0]['dof']){
+                    meter_data = "<div class='col-md-4'><p><h4 class='text-center'>Meter kWh Cumulative:&emsp;"+result[0]['meter_kwh']+"</h4></p></div><div class='col-md-4'><p><h4 class='text-center'>Meter kVAh Cumulative:&emsp;"+result[0]['meter_kva']+"</h4></p></div><div class='col-md-3><p><h4 class='text-center'>Door Open Fault:&emsp;<code class='code-green'>CLOSED</code></h4></p></div>";
+                }
+                else{
+                    meter_data = "<div class='col-md-4'><p><h4 class='text-center'>Meter kWh Cumulative:&emsp;"+result[0]['meter_kwh']+"</h4></p></div><div class='col-md-4'><p><h4 class='text-center'>Meter kVAh Cumulative:&emsp;"+result[0]['meter_kva']+"</h4></p></div><div class='col-md-3'><p><h4 class='text-center'>Door Open Fault:&emsp;<code class='code-red'>OPEN</code></h4></p></div>";
+                }
+                data += "<div class='col-md-4'><div class='well red_feed'><p>"+r_bulb+"<hr></p><p><h4><div class='text-left'>Volatge:&emsp;&emsp;&emsp;&emsp;&emsp;<code>"+result[0]['r_voltage']+"</code>&nbsp;(Volts)</div></h4></p><p><h4><div class='text-left'>Current:&emsp;&emsp;&emsp;&emsp;&emsp;<code>"+result[0]['r_current']+"</code>&nbsp;(Amps)</div></h4></p><p><h4><div class='text-left'>Frequency:&emsp;&emsp;&emsp;&nbsp;&nbsp;<code>"+result[0]['r_frequency']+"</code>&nbsp;(Hz)</div></h4></p><p><h4><div class='text-left'>Power Factor:&emsp;&emsp;&nbsp;<code>"+result[0]['r_pf']+"</code></div></h4></p><p><h4><div class='text-left'>Dimming:&emsp;&emsp;&emsp;&emsp;&nbsp;<code>"+result[0]['dimming_percent']+"</code>&nbsp;(%)</div></h4></p><p><h4><div class='text-left'>Active Power:&emsp;&emsp;&nbsp;<code>"+result[0]['r_ap']+"</code>&nbsp;(KW)</div></h4></p><p><h4><div class='text-left'>Apperent Power:&emsp;<code>"+result[0]['r_app']+"</code>&nbsp;(kVA)</div></h4></p><p><h4><div class='text-left'>No. of Hours On:&emsp;<code>"+result[0]['r_on']+"</code>&nbsp;(Hrs)</div></h4></p><p><h4><div class='text-left'>No. of Hours Off:&emsp;<code>"+result[0]['r_off']+"</code>&nbsp;(Hrs)</div></h4></p><p><h4>Fuse status:&emsp;&emsp;&emsp;<code>"+r_fusestatus+"</code></h4></p></div></div>";
+                data += "<div class='col-md-4'><div class='well yellow_feed'><p>"+y_bulb+"<hr></p><p><h4><div class='text-left'>Volatge:&emsp;&emsp;&emsp;&emsp;&emsp;<code>"+result[0]['y_voltage']+"</code>&nbsp;(Volts)</div></h4></p><p><h4><div class='text-left'>Current:&emsp;&emsp;&emsp;&emsp;&emsp;<code>"+result[0]['y_current']+"</code>&nbsp;(Amps)</div></h4></p><p><h4><div class='text-left'>Frequency:&emsp;&emsp;&emsp;&nbsp;&nbsp;<code>"+result[0]['y_frequency']+"</code>&nbsp;(Hz)</div></h4></p><p><h4><div class='text-left'>Power Factor:&emsp;&emsp;&nbsp;<code>"+result[0]['y_pf']+"</code></div></h4></p><p><h4><div class='text-left'>Dimming:&emsp;&emsp;&emsp;&emsp;&nbsp;<code>"+result[0]['dimming_percent']+"</code>&nbsp;(%)</div></h4></p><p><h4><div class='text-left'>Active Power:&emsp;&emsp;&nbsp;<code>"+result[0]['y_ap']+"</code>&nbsp;(KW)</div></h4></p><p><h4><div class='text-left'>Apperent Power:&emsp;<code>"+result[0]['y_app']+"</code>&nbsp;(kVA)</div></h4></p><p><h4><div class='text-left'>No. of Hours On:&emsp;<code>"+result[0]['y_on']+"</code>&nbsp;(Hrs)</div></h4></p><p><h4><div class='text-left'>No. of Hours Off:&emsp;<code>"+result[0]['y_off']+"</code>&nbsp;(Hrs)</div></h4></p><p><h4>Fuse status:&emsp;&emsp;&emsp;<code>"+y_fusestatus+"</code></h4></p></div></div>";
+                data += "<div class='col-md-4'><div class='well blue_feed'><p>"+b_bulb+"<hr></p><p><h4><div class='text-left'>Volatge:&emsp;&emsp;&emsp;&emsp;&emsp;<code>"+result[0]['b_voltage']+"</code>&nbsp;(Volts)</div></h4></p><p><h4><div class='text-left'>Current:&emsp;&emsp;&emsp;&emsp;&emsp;<code>"+result[0]['b_current']+"</code>&nbsp;(Amps)</div></h4></p><p><h4><div class='text-left'>Frequency:&emsp;&emsp;&emsp;&nbsp;&nbsp;<code>"+result[0]['b_frequency']+"</code>&nbsp;(Hz)</div></h4></p><p><h4><div class='text-left'>Power Factor:&emsp;&emsp;&nbsp;<code>"+result[0]['b_pf']+"</code></div></h4></p><p><h4><div class='text-left'>Dimming:&emsp;&emsp;&emsp;&emsp;&nbsp;<code>"+result[0]['dimming_percent']+"</code>&nbsp;(%)</div></h4></p><p><h4><div class='text-left'>Active Power:&emsp;&emsp;&nbsp;<code>"+result[0]['b_ap']+"</code>&nbsp;(KW)</div></h4></p><p><h4><div class='text-left'>Apperent Power:&emsp;<code>"+result[0]['b_app']+"</code>&nbsp;(kVA)</div></h4></p><p><h4><div class='text-left'>No. of Hours On:&emsp;<code>"+result[0]['b_on']+"</code>&nbsp;(Hrs)</div></h4></p><p><h4><div class='text-left'>No. of Hours Off:&emsp;<code>"+result[0]['b_off']+"</code>&nbsp;(Hrs)</div></h4></p><p><h4>Fuse status:&emsp;&emsp;&emsp;<code>"+b_fusestatus+"</code></h4></p></div></div>";
+                $("#feeder_data").append(data);
+                
+//                 dof = "<div class='col-md-12'><p><h4 class='text-center'>Door Open Fault: &emsp;<code>"+result[0]['dof']+"</code></h4></p>";
+//                 $("#dof").append(dof);
+//                 
+//                 meter_data = "<div class='col-md-12'><p><h4 class='text-center'>Meter KWH Cumulative: &emsp;<code>"+result[0]['meter_kwh']+"</code></h4></p><p><h4 class='text-center'>Meter KVA Cumulative: &emsp;<code>"+result[0]['meter_kva']+"</code></h4></p></div>";
+//                 $("#meter").append(meter_data);
+
+                $("#meter").append(meter_data);
+
+                feeder_detail = "<div class='col-md-3'><p><h4 class='text-center'>Feeder Name:&emsp;"+result[0]['feeder_name']+"</h4></p></div><div class='col-md-3'><p><h4 class='text-center'>Data Time:&emsp;"+result[0]['date_filed']+"</h4></p></div><div class='col-md-3'><p><h4 class='text-center'>Last Power On:&emsp;"+result[0]['lp_on1']+"</h4></p></div><div class='col-md-3'><p><h4 class='text-center'>Last Power Off:&emsp;"+result[0]['lp_off1']+"</h4></p></div>";
+                $("#feeder_detail").append(feeder_detail);
+            }
+        });
+    </script>
+    {% endblock %}

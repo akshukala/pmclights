@@ -1,0 +1,601 @@
+{% extends 'base.html' %}
+    {% load staticfiles %}
+    {% block content %}
+        <br><br><br><br>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="text-left"><h4>User Data</h4></div>
+                                </div>
+                                <div class="col-md-8">
+                                <div class="text-right">
+                                    <button class="btn btn-info text-left" data-toggle="modal" data-target="#createUserModal" id='create_user'>Create User</button>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="table-responsive"> 
+                                <table id="user_table" class="table table-striped table-bordered table-condensed text-center table-responsive">
+                                    <thead>
+                                        <tr>
+                                            <td>Sr. No</td>
+                                            <td>Name</td>
+                                            <td>Authority</td>
+                                            <td>Username</td>
+                                            <td>Password</td>
+                                            <td>Role</td>
+                                            <td>Role</td>
+                                            <td>Edit</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="user_body">
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <!--Create user Modal -->
+        <div class="modal fade" data-backdrop="static" data-keyboard="false" id="createUserModal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">Create User</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                              <div class="errors_user_modal"></div>
+                                <div class="row">
+                                  <div class="col-md-6">
+                                    <div class="form-group form-inline">
+                                        <label>First Name:</label>
+                                        <input type="text" id="first_name" class="form-control input-md">
+                                    </div>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <div class="form-group form-inline">
+                                        <label>Last Name:</label>
+                                        <input id="last_name" class="form-control input-md " type="text">
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="row">
+                                  <div class="col-md-6">
+                                    <div class="form-group form-inline">
+                                        <label>User Name:</label>
+                                        <input type="text" id="user_name" class="form-control input-md">
+                                    </div>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <div class="form-group form-inline">
+                                        <label>User Password :</label>
+                                        <input id="user_password" class="form-control input-md " type="password">
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="row">
+                                  <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>User Authority :</label>
+                                        <select class="form-control" id="user_authority">
+                                            <option value='select'>Select</option>
+                                            <option value='Superintendent Enggineer'>Superintendent Enggineer</option>
+                                            <option value='Executive Enggineer'>Executive Enggineer</option>
+                                            <option value='Deputy Engineer'>Deputy Engineer</option>
+                                            <option value='Junior Engineer'>Junior Engineer</option>
+                                            <option value='General'>General</option> 
+                                        </select>
+                                    </div>
+                                  </div>
+                                  <div class="col-md-3">
+                                    <div class="form-group form-inline">
+                                        <label>Division Role : </label>
+                                        
+                                        <select class="form-control" id="user_division_role" multiple="multiple" >                                        
+                                        </select>
+                                    </div>
+                                  </div>
+                                </div>
+                                  <div class="col-md-6">
+                                    <div class="form-group form-inline">
+                                        <label>Subdivision Role : </label>
+                                        <div id="select_div"></div>
+                                    </div>
+                                  </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="save_user" class="btn btn-primary">Save changes</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Edit user Modal -->
+        <div class="modal fade" data-backdrop="static" data-keyboard="false" id="editUserModal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">Edit User</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                              <div class="errors_user_modal"></div>
+                                <div class="row">
+                                  <div class="col-md-6">
+                                    <input type="hidden" name="user_id" id="user_id">
+                                    <div class="form-group form-inline">
+                                        <label>First Name:</label>
+                                        <input type="text" id="edit_first_name" class="form-control input-md">
+                                    </div>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <div class="form-group form-inline">
+                                        <label>Last Name:</label>
+                                        <input id="edit_last_name" class="form-control input-md " type="text">
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="row">
+                                  <div class="col-md-6">
+                                    <div class="form-group form-inline">
+                                        <label>User Name:</label>
+                                        <input type="text" id="edit_user_name" class="form-control input-md">
+                                    </div>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <div class="form-group form-inline">
+                                        <label>User Password :</label>
+                                        <input id="edit_user_password" class="form-control input-md " type="password">
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="row">
+                                  <div class="col-md-6">
+                                    <div class="form-group form-inline">
+                                        <label>User Authority :</label>
+                                        <select class="form-control" id="edit_user_authority">
+                                            <option value='select'>Select</option>
+                                            <option value='Superintendent Enggineer'>Superintendent Enggineer</option>
+                                            <option value='Executive Enggineer'>Executive Enggineer</option>
+                                            <option value='Deputy Engineer'>Deputy Engineer</option>
+                                            <option value='Junior Engineer'>Junior Engineer</option>
+                                            <option value='General'>General</option> 
+                                        </select>
+                                    </div>
+                                  </div>
+                                  <div class="col-md-3">
+                                    <div class="form-group form-inline">
+                                        <label>Select Divisions : </label>
+                                        <select class="form-control" id="select_divisionrole" multiple="multiple">
+                                        </select>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group form-inline">
+                                        <label>Select Sub-Divisions : </label>
+                                        <div id="edit_select_div"></div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="edit_user_btn" class="btn btn-primary">Update</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
+       
+          
+    <script type="text/javascript">
+        var t = $('#user_table').DataTable({
+            "pageLength": 5
+        });
+        $(document).ready(function() {
+            $.ajax(
+            {
+                type: 'get',
+                url: "/allDivision/",
+                headers: {'content_type':'application/json'},
+                            dataType: 'json',
+                            success : function(data)
+                            {   
+                                result = data['content'];
+                                console.log(result);
+                                for(i=0;i<result.length;i++){
+                                    // var result_data = result[i]['id'] +"!"+result[i]['name'];
+                                    var result_data = result[i]['name']
+                                    data1 = "<option value='"+result_data+"'>"+result[i]['name']+"</option>";
+                                    $("#select_divisionrole").append(data1);
+                                    $("#user_division_role").append(data1);
+                                    }
+
+                                    $("#select_divisionrole").multiselect({
+                                        includeSelectAllOption: true
+                                    });
+                                    $("#user_division_role").multiselect({
+                                        includeSelectAllOption: true
+                                    });
+                                },
+                                error : function(error)
+                                {
+                                    window.alert(error);
+                                },
+                        });
+
+
+                $('#select_divisionrole').change(function () {
+                    var value =$(this).val();
+                    var division_id= [];
+                    console.log(value);
+                    // for(i=0; i < value.length; i++){
+                    //     fields = value[i].split('!');
+                    //     division_id.push(fields[0]);
+                    // }
+                    $.ajax(
+                    {
+                        type: 'get',
+                        url: "/all_subdivision/",
+                        data: { 'division_id[]': value,
+                                },
+                        headers: {'content_type':'application/json'},
+                                    dataType: 'json',
+                                    success : function(data)
+                                    {   
+                                        result = data['content'];
+                                        console.log(result);
+                                        $("#edit_select_div").empty();
+                                        var data1 = "<select class='form-control' id='select_subdivision_role' multiple='multiple'>";
+                                        for(i=0;i<result.length;i++){
+                                            // var result_data = result[i]['id'] +"!"+result[i]['name'];
+                                            var result_data = result[i]['name']
+                                            data1 += "<option value='"+result_data+"'>"+result[i]['name']+"</option>";
+                                        }
+                                        data1 += "</select>";
+                                        $("#edit_select_div").append(data1);
+                                        $("#select_subdivision_role").multiselect({
+                                                includeSelectAllOption: true
+                                            });
+                                    },
+                                    error : function(error)
+                                    {
+                                        window.alert(error);
+                                    },
+                                });
+                    });
+
+
+                $('#user_division_role').change(function(){
+                    var value =$(this).val();
+                    var fields;
+                    var division_id= [];
+                    console.log(value);
+                    // for(i=0; i < value.length; i++){
+                    //     fields = value[i].split('!');
+                    //     division_id.push(fields[0]);
+                    // }
+                    //console.log(division_id);
+                    $.ajax(
+                    {
+                        type: 'get',
+                        url: "/all_subdivision/",
+                        data: { 'division_id[]': value,
+                                },
+                        headers: {'content_type':'application/json'},
+                                    dataType: 'json',
+                                    success : function(data)
+                                    {   
+                                        result = data['content'];
+                                        console.log(result);
+                                        
+                                        $("#select_div").empty();
+                                        var data1 ="<select class='form-control' id='user_subdivision_role' multiple='multiple'>";
+                                        
+                                        for(i=0;i<result.length;i++){
+                                            // var result_data = result[i]['id'] +"!"+result[i]['name'];
+                                            var result_data = result[i]['name'];
+                                            data1 += "<option value='"+result_data+"'>"+result[i]['name']+"</option>";
+                                        }
+                                        data1 += "</select>";
+                                        $("#select_div").append(data1); 
+                                        
+                                        $("#user_subdivision_role").multiselect({
+                                                includeSelectAllOption: true
+                                        });
+                                            
+                                        },
+                                        error : function(error)
+                                        {
+                                            window.alert(error);
+                                        },
+                                });
+                    });
+            $.ajax(
+                {
+                    type:'get',
+                    url: "/getUser/",
+                    headers: {'content_type':'application/json'},
+                    dataType: 'json',
+                    success : function(result)
+                        {   
+                            console.log(result['content']);
+                            populate_user_data(result['content']['user_data']);
+                        },
+                    error : function(error)
+                        {
+                            window.alert(error['responseText'])
+                        }
+                    });
+
+                $("#save_user").click(function(){
+                        var errors=[];
+                        var first_name = $("#first_name").val();
+                        var last_name = $("#last_name").val();
+                        var user_name = $("#user_name").val();
+                        var user_password = $("#user_password").val();
+                        var user_authority = $("#user_authority").val();
+                        var user_division_role = $("#user_division_role").val();
+                        var user_subdivision_role = $("#user_subdivision_role").val();
+                        $("#first_name").css({"border-color": "#ccc"});
+                        $("#last_name").css({"border-color": "#ccc"});
+                        $("#user_name").css({"border-color": "#ccc"});
+                        $("#user_password").css({"border-color": "#ccc"});
+                        $("#user_authority").css({"border-color": "#ccc"});
+                        $("#user_division_role").css({"border-color": "#ccc"});
+                        $("#user_subdivision_role").css({"border-color": "#ccc"});
+                        
+                        if (first_name.length == 0) {
+                                errors[errors.length] = "Enter First Name.";
+                                $("#first_name").css({"border-color": "#ff4c4c"});
+                                $("#first_name").focus();
+                            }
+                        if (last_name.length == 0) {
+                                errors[errors.length] = "Enter Last Name.";
+                                $("#last_name").css({"border-color": "#ff4c4c"});
+                                $("#last_name").focus();
+                            }
+                         if (user_name.length == 0) {
+                                errors[errors.length] = "Enter User Name.";
+                                $("#user_name").css({"border-color": "#ff4c4c"});
+                                $("#user_name").focus();
+                            }
+                         if (user_password.length == 0) {
+                                errors[errors.length] = "Enter User Password.";
+                                $("#user_password").css({"border-color": "#ff4c4c"});
+                                $("#user_password").focus();
+                            }
+                         if (user_authority.length == 0) {
+                                errors[errors.length] = "Enter User Authority.";
+                                $("#user_authority").css({"border-color": "#ff4c4c"});
+                                $("#user_authority").focus();
+                            }
+                         if (user_division_role == null) {
+                                errors[errors.length] = "Enter division role.";
+                                $("#user_division_role").css({"border-color": "#ff4c4c"});
+                                $("#user_division_role").focus();
+                            }
+                        if (user_subdivision_role == null) {
+                                errors[errors.length] = "Enter sub division role.";
+                                $("#user_division_role").css({"border-color": "#ff4c4c"});
+                                $("#user_division_role").focus();
+                            }
+                        if (errors.length > 0) {
+                                reportUserErrorsModal(errors);
+                                return false;
+                            }
+                        var division_role = '';
+                        for(j=0;j<user_division_role.length;j++){
+                            var temp = user_division_role[j];
+                            if(j==(user_division_role.length-1)){
+                                division_role += temp;
+                            }
+                            else{
+                                division_role += temp + "|";   
+                            }
+                        }
+                        var subdivision_role = '';
+                        for(j=0;j<user_subdivision_role.length;j++){
+                            var temp = user_subdivision_role[j];
+                            if(j==(user_subdivision_role.length-1)){
+                                subdivision_role += temp;
+                            }
+                            else{
+                                subdivision_role += temp + "|";   
+                            }
+                        }
+                        
+
+                        
+                    $.ajax(
+                    {
+                        type:'post',
+                        url: "/post_userdata/",
+                        dataType: 'json',
+                        data: { 'first_name': first_name,
+                                'last_name': last_name,
+                                'user_name': user_name,
+                                'user_password': user_password,
+                                'user_authority': user_authority,
+                                'user_division_role': division_role,
+                                'user_subdivision_role': subdivision_role,
+                                },
+                        success : function(data)
+                            {   
+                                if (data['content']['responseCode'] == 200) {
+                                    var message;
+                                    message = data['content']['Message'];
+                                    swal({
+                                        title: "Success!!!",
+                                        text: message,
+                                        type: "success",
+                                    },
+                                    function(){
+                                        location.reload();
+                                    });
+                                }else {
+                                    var message;
+                                    message = data['content']['Message'];
+                                    $("#first_name").val('');
+                                    $("#last_name").val('');
+                                    $("#user_name").val('');
+                                    $("#user_password").val('');
+                                    $("#user_authority").val('');
+                                    swal("error", message, "error");
+                                }
+                                console.log(data)  
+                            },
+                        error : function(error)
+                                {
+                                    window.alert(error['responseText'])
+                                }
+                            });
+                });
+
+                $("#edit_user_btn").one('click',function(){
+                    var edit_fname = $("#edit_first_name").val().trim();
+                    var edit_lname = $("#edit_last_name").val().trim();
+                    var edit_uname = $("#edit_user_name").val().trim();
+                    var edit_passpwrd = $("#edit_user_password").val().trim();
+                    var edit_authority = $("#edit_user_authority").val();
+                    var user_division_role = $("#select_divisionrole").val();
+                    var user_subdivision_role = $("#select_subdivision_role").val();
+                    var user_id = $("#user_id").val();
+                    var division_role = '';
+                        for(j=0;j<user_division_role.length;j++){
+                            var temp = user_division_role[j];
+                            if(j==(user_division_role.length-1)){
+                                division_role += temp;
+                            }
+                            else{
+                                division_role += temp + "|";   
+                            }
+                        }
+                        var subdivision_role = '';
+                        for(j=0;j<user_subdivision_role.length;j++){
+                            var temp = user_subdivision_role[j];
+                            if(j==(user_subdivision_role.length-1)){
+                                subdivision_role += temp;
+                            }
+                            else{
+                                subdivision_role += temp + "|";   
+                            }
+                        }                    
+                    $.ajax(
+                    {
+                        type:'post',
+                        url: "/edit_userdata/",
+                        dataType: 'json',
+                        data: { 'user': user_id,
+                                'first_name': edit_fname,
+                                'last_name': edit_lname,
+                                'user_name': edit_uname,
+                                'user_password': edit_passpwrd,
+                                'user_authority': edit_authority,
+                                'user_role_division': division_role,
+                                'user_role_subdivision': subdivision_role
+                                },
+                        success : function(data)
+                            {   
+                                if (data['content']['responseCode'] != 503) {
+                                    var message;
+                                    message = data['content']['Message'];
+                                    swal({
+                                        title: "Success!!!",
+                                        text: message,
+                                        type: "success",
+                                    },
+                                    function(){
+                                        location.reload();
+                                    });
+                                }else {
+                                    var message;
+                                    message = data['content']['Message'];
+                                    swal("error", message, "error");
+
+                                }
+                                console.log(data)
+                            },
+                        error : function(error)
+                                {
+                                    window.alert(error['responseText'])
+                                }
+                            });
+                });
+
+                
+
+                function populate_user_data(result){
+                    console.log(result)
+                    for(i=0;i<result.length;i++){
+                           var rowIndex = t.row.add( [
+                                        i+1,
+                                        result[i]['name'],
+                                        result[i]['authority'],
+                                        result[i]['user_name'],
+                                        result[i]['user_password'],
+                                        result[i]['role_division'],
+                                        result[i]['role_subdivision'],
+                                        "<button id='"+result[i]['id']+"' class='btn btn-primary' onclick='edit_user("+result[i]['id']+")'>Edit</button>"
+                                    ]).draw();
+                            var row = $('#user_table').dataTable().fnGetNodes(rowIndex);
+                            $(row).attr('id', result[i]['id']);
+                    }
+                            
+                }
+                
+                function reportUserErrorsModal(errors){
+                                $('.errors_user_modal').empty();
+                                var msg = [];
+                                for (var i = 0; i<errors.length; i++) {
+                                    var numError = i + 1;
+                                    msg [i]= "\n" + numError + ". " + errors[i] ;
+                                }
+                                $.each(msg, function(){
+                                    $('.errors_user_modal').append("<div class='alert alert-danger alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert'><span aria-hidden='true'>&times;</span><span class='sr-only'>Close</span></button>" + this +"</div>");
+                                });
+                }
+                
+         });
+        
+        function edit_user(user_id){
+                    var row_data = t.row('#'+user_id).data();
+                    var name = row_data[1].split(' ');
+                    $("#edit_first_name").val(name[0]);
+                    $("#edit_last_name").val(name[1]);
+                    $("#edit_user_name").val(row_data[3]);
+                    $("#edit_user_authority").val(row_data[2]);
+                    $("#edit_user_password").val(row_data[4]);
+                    var division_role_data = row_data[5].split('|');
+                    $("#select_divisionrole").multiselect("select",division_role_data);
+                    $("#user_id").val(user_id);
+                    $('#editUserModal').modal('show');
+            }     
+    
+    </script>
+    {% endblock %}    

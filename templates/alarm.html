@@ -1,0 +1,367 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block content %}
+    <br><br><br><br>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="tabs">
+                        <ul class="nav nav-tabs nav-justified">
+                            <li class="active"><a href="#tab1-1" data-toggle="tab"><i class="icon-star"></i><b>Alarm Alerts</b></a></li>
+                            <li><a href="#tab1-2" data-toggle="tab"><b>Fault Alarm SMS List</b></a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="tab1-1">
+                                <br><br>
+                                <div class="panel panel-primary">
+                                    <div class="panel-heading">Fault List</div>
+                                    <div class="panel-body">
+                                        <div class="table-responsive"> 
+                                            <table id="fault_table" class="table table-striped table-bordered table-condensed text-center table-responsive">
+                                                <thead>
+                                                    <tr>
+                                                        <td>Sr. No</td>
+                                                        <td>Feeder Name</td>
+                                                        <td>Fault Type</td>
+                                                        <td>Fault Time</td>
+                                                        <td>Check</td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="fault_body">
+                                                    
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="tab1-2">
+                                <br><br>
+                                <div class="panel panel-primary">
+                                    <div class="panel-heading">Fault Alarm SMS List</div>
+                                    <div class="panel-body">
+                                        <div class="table-responsive"> 
+                                            <table id="sms_table" class="table table-striped table-bordered table-condensed text-center table-responsive">
+                                                <thead>
+                                                    <tr>
+                                                        <td>Sr. No</td>
+                                                        <td>Feeder Name</td>
+                                                        <td>Fault Type</td>
+                                                        <td>Contact Nos.</td>
+                                                        <td>Edit</td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="sms_body">
+                                                    
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>            
+                            </div>
+                        </div>
+                        <div class="tab-content">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+    
+       
+        <!--Edit Alarm Nos Modal -->
+        <div class="modal fade" data-backdrop="static" data-keyboard="false" id="editnosModal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">Edit Contact Nos.</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h4 id="feed_name"><strong></strong></h4>
+                            </div>
+                            <div class="col-md-6">
+                                <h4 id="fault_type"><strong></strong></h4>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <input type="hidden" name="alarm_id" id="alarm_id">
+                            <div class="col-md-12">
+                              <div class="errors_editnos_modal"></div>
+                                <div class="row">
+                                  <div class="col-md-6">
+                                    <div class="form-group form-inline">
+                                        <label>Contact No 1:</label>
+                                        <input type="number" id="cont_1" class="form-control input-md">
+                                    </div>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <div class="form-group form-inline">
+                                        <label>Contact No 2:</label>
+                                        <input id="cont_2" class="form-control input-md" type="number">
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="row">
+                                  <div class="col-md-6">
+                                    <div class="form-group form-inline">
+                                        <label>Contact No 3:</label>
+                                        <input type="number" id="cont_3" class="form-control input-md">
+                                    </div>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <div class="form-group form-inline">
+                                        <label>Contact No 4:</label>
+                                        <input id="cont_4" class="form-control input-md " type="number">
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="row">
+                                  <div class="col-md-6">
+                                    <div class="form-group form-inline">
+                                        <label>Contact No 5:</label>
+                                        <input type="number" id="cont_5" class="form-control input-md">
+                                    </div>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <div class="form-group form-inline">
+                                        <label>Contact No 6:</label>
+                                        <input id="cont_6" class="form-control input-md " type="number">
+                                    </div>
+                                  </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="edit_no_btn" class="btn btn-primary">Update</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <script type="text/javascript">
+        var t = $('#fault_table').DataTable({
+            "pageLength": 50
+        });
+        var alarm_table = $("#sms_table").DataTable({
+            "pageLength": 5
+        });
+        $(document).ready(function() {
+            
+            $.ajax(
+                {
+                    type:'get',
+                    url: "/getFault/",
+                    headers: {'content_type':'application/json'},
+                    dataType: 'json',
+                    success : function(result)
+                        {   
+                            console.log(result['content']);
+                            for(i=0;i<result['content'].length;i++){
+                                var rowIndex = t.row.add( [
+                                        i+1,
+                                        result['content'][i]['feeder_name'],
+                                        result['content'][i]['fault_type'],
+                                        result['content'][i]['fault_time'],
+                                        "<input id='"+result['content'][i]['id']+"' onclick='edit_fault("+result['content'][i]['id']+")' type='checkbox'>"
+                                    ]).draw();
+                                var row = $('#fault_table').dataTable().fnGetNodes(rowIndex);
+                                $(row).attr('id', result['content'][i]['id']);
+                            }
+                        },
+                    error : function(error)
+                        {
+                            window.alert(error['responseText'])
+                        }
+                    });
+
+            $.ajax(
+                {
+                    type:'get',
+                    url: "/getUser/",
+                    headers: {'content_type':'application/json'},
+                    dataType: 'json',
+                    success : function(result)
+                        {   
+                            console.log(result['content']);
+//                             populate_user_data(result['content']['user_data']);
+                            populate_alarm_data(result['content']['alaram_list']);
+                        },
+                    error : function(error)
+                        {
+                            window.alert(error['responseText'])
+                        }
+                    });
+
+                $("#edit_no_btn").click(function(){
+                    var errors=[]
+                    var mobile_regex=/^\d{10}$/;
+                    var cont_1 = $("#cont_1").val().trim();
+                    var cont_2 = $("#cont_2").val().trim();
+                    var cont_3 = $("#cont_3").val().trim();
+                    var cont_4 = $("#cont_4").val().trim();
+                    var cont_5 = $("#cont_5").val().trim();
+                    var cont_6 = $("#cont_6").val().trim();
+                    var alarm_id = $("#alarm_id").val();
+                    
+                    $("#cont_1").css({"border-color": "#ccc"});
+                    $("#cont_2").css({"border-color": "#ccc"});
+                    $("#cont_3").css({"border-color": "#ccc"});
+                    $("#cont_4").css({"border-color": "#ccc"});
+                    $("#cont_5").css({"border-color": "#ccc"});
+                    $("#cont_6").css({"border-color": "#ccc"});
+                        
+                    if (!cont_1.match(mobile_regex)) {
+                                errors[errors.length] = "Enter 10 digit number.";
+                                $("#cont_1").css({"border-color": "#ff4c4c"});
+                                $("#cont_1").focus();
+                            }
+                    if (!cont_2.match(mobile_regex) && cont_2.length !=0) {
+                                errors[errors.length] = "Enter 10 digit number.";
+                                $("#cont_2").css({"border-color": "#ff4c4c"});
+                                $("#cont_2").focus();
+                            }
+                    if (!cont_3.match(mobile_regex) && cont_3.length !=0) {
+                                errors[errors.length] = "Enter 10 digit number.";
+                                $("#cont_3").css({"border-color": "#ff4c4c"});
+                                $("#cont_3").focus();
+                            }
+                    if (!cont_4.match(mobile_regex) && cont_4.length !=0) {
+                                errors[errors.length] = "Enter 10 digit number.";
+                                $("#cont_4").css({"border-color": "#ff4c4c"});
+                                $("#cont_4").focus();
+                            }
+                    if (!cont_5.match(mobile_regex) && cont_5.length !=0) {
+                                errors[errors.length] = "Enter 10 digit number.";
+                                $("#cont_5").css({"border-color": "#ff4c4c"});
+                                $("#cont_5").focus();
+                            }
+                    if (!cont_6.match(mobile_regex) && cont_6.length !=0) {
+                                errors[errors.length] = "Enter 10 digit number.";
+                                $("#cont_6").css({"border-color": "#ff4c4c"});
+                                $("#cont_6").focus();
+                            }
+                    if (errors.length > 0) {
+                                reportEditContModal(errors);
+                                return false;
+                            }
+                    $.ajax(
+                    {
+                        type:'post',
+                        url: "/edit_alarmdata/",
+                        dataType: 'json',
+                        data: { 'cont_1': cont_1,
+                                'cont_2': cont_2,
+                                'cont_3': cont_3,
+                                'cont_4': cont_4,
+                                'cont_5': cont_5,
+                                'cont_6': cont_6,
+                                'alarm_id': alarm_id,
+                                },
+                        success : function(data)
+                            {   
+                                if (data['content']['responseCode'] != 503) {
+                                    var message;
+                                    message = data['content']['Message'];
+                                    swal({
+                                        title: "Success!!!",
+                                        text: message,
+                                        type: "success",
+                                    },
+                                    function(){
+                                        location.reload();
+                                    });
+                                }else {
+                                    var message;
+                                    message = data['content']['Message'];
+                                    swal("error", message, "error");
+
+                                }
+                                console.log(data);
+                            },
+                        error : function(error)
+                                {
+                                    window.alert(error['responseText']);
+                                }
+                            });
+                });
+
+                function populate_alarm_data(result){
+                    for(i=0;i<result.length;i++){
+                        var rowIndex = alarm_table.row.add( [
+                                        i+1,
+                                        result[i]['feeder_name'],
+                                        result[i]['fault_name'],
+                                        result[i]['nos'],
+                                        "<button id='"+result[i]['id']+"' class='btn btn-primary' onclick='edit_alarm("+result[i]['id']+")'>Edit</button>"
+                                    ]).draw();
+                        var row = $('#sms_table').dataTable().fnGetNodes(rowIndex);
+                        $(row).attr('id', result[i]['id']);
+                    }
+                }            
+                
+                function reportEditContModal(errors){
+                                $('.errors_editnos_modal').empty();
+                                var msg = [];
+                                for (var i = 0; i<errors.length; i++) {
+                                    var numError = i + 1;
+                                    msg [i]= "\n" + numError + ". " + errors[i] ;
+                                }
+                                $.each(msg, function(){
+                                    $('.errors_editnos_modal').append("<div class='alert alert-danger alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert'><span aria-hidden='true'>&times;</span><span class='sr-only'>Close</span></button>" + this +"</div>");
+                                });
+                }
+         });
+        
+        function edit_alarm(alarm_id){
+            var row_data = alarm_table.row('#'+alarm_id).data();
+            var nos = row_data[3].split(','); 
+            $("#cont_1").val(nos[0]);
+            $("#cont_2").val(nos[1]);
+            $("#cont_3").val(nos[2]);
+            $("#cont_4").val(nos[3]);
+            $("#cont_5").val(nos[4]);
+            $("#cont_6").val(nos[5]);
+            $("#alarm_id").val(alarm_id);
+            $("#feed_name").html("Feeder Name: &emsp;"+row_data[1]);
+            $("#fault_type").html("Fault Type: &emsp;"+row_data[2]);
+            $('#editnosModal').modal('show');
+        }
+
+        function edit_fault(alarm_id){
+            $.ajax(
+                    {
+                        type:'post',
+                        url: "/edit_faulterror/",
+                        dataType: 'json',
+                        data: { 
+                                'alarm_id': alarm_id,
+                                },
+                        success : function(data)
+                            {   
+                                if (data['content']['responseCode'] != 503) {
+                                    location.reload();
+                                }else {
+                                    var message;
+                                    message = data['content']['Message'];
+                                    swal("error", message, "error");
+
+                                }
+                                console.log(data);
+                            },
+                        error : function(error)
+                                {
+                                    window.alert(error['responseText']);
+                                }
+                            });
+        }
+        
+    </script>
+    {% endblock %}

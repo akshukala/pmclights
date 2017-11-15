@@ -1,0 +1,432 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block content %}
+    <br><br><br><br>
+        <div class="container">
+            <div class="errors"></div>
+            <div class="row">
+                <div class="col-md-3 col-md-offset-1 ">
+                    <input id="get_division" name="get_division" placeholder="Select Division" class="form-control input-md" type="text">
+                </div>
+                <div class="col-md-3">
+                    <button id="change_btn" class="btn btn-primary">Change Division</button>
+                </div>
+                <div class="col-md-3">
+                    <!-- <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name"> -->
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-3 col-md-offset-3">
+                    <label>Output Time: </label>
+                </div>
+                <div class="col-md-3">
+                    <div class="input-group clockpicker">
+                        <input type="text" class="form-control" value="" id="output_time">
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-time"></span>
+                            </span>
+                    </div>
+                </div>
+            </div>
+            <br><br>
+            <div class="row">
+                <div class="table-responsive"> 
+                    <table id="control_table" class="table table-striped table-bordered table-condensed text-center table-responsive">
+                        <thead>
+                            <tr>
+                                <td>Sr. No</td>
+                                <td> Feeder Name </td>
+                                <td> Full Year Program</td>
+                                <td> Auto/Manual Program </td>
+                            </tr>
+                        </thead>
+                        <tbody id="control_table_body">
+                    
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    
+
+     <script type="text/javascript">
+        $(document).ready(function(){
+            $('.clockpicker').clockpicker({
+                placement: 'bottom',
+                align: 'left',
+                autoclose: true,
+                'default': 'now',
+                // twelvehour: true 
+            });
+            var currentTime = new Date()
+            var hours = currentTime.getHours();
+            var minutes = currentTime.getMinutes();
+            var strTime = hours + ':' + minutes;
+            $("#output_time").val(strTime);
+            $("#get_division").autocomplete({
+                source: function(request, response) {
+                    
+                    $.ajax({
+                        url: "/getDivision/",
+                        type : "get",
+                        headers: {'content_type':'application/json'},
+                        dataType: 'json',
+                        data :{
+                            "term": request.term
+                        },
+                        success:function(data){
+                            response(data["content"]);
+                        }
+                    });
+                },
+                change: function(event,ui){
+                    if (ui.item==null){
+                            $("#get_division").val('');
+                            $("#get_division").focus();
+                        }
+                    }
+            });
+
+            $("#change_btn").click(function(){
+                division_name = $("#get_division").val();
+                $.ajax(
+                    {
+                        type:'get',
+                        url: "/getFeederSettings/?division_name="+division_name,
+                        headers: {'content_type':'application/json'},
+                        dataType: 'json',
+                        success : function(result)
+                                {   
+                                    console.log(result['content']);
+                                    populate_table(result['content']);
+                                },
+                        error : function(error)
+                                {
+                                    window.alert(error['responseText'])
+                                }
+                    });
+            });
+
+            $("#get_division").keyup(function(event){
+                if(event.keyCode == 13){
+                    $("#change_btn").click();
+                }
+            });
+
+            $('#control_table').tableSearch({
+                    searchText:'Search',
+                    searchPlaceHolder:'Input Value'
+                });
+
+            function populate_table(result){
+                DeleteRows();
+                for(i=0;i<result.length;i++){
+                    var sr_no = document.createTextNode((i+1));
+                    var feeder_name = document.createTextNode(result[i]['feeder_name']);
+
+                    var annual_div = document.createElement('DIV');
+                    annual_div.setAttribute('class','row');
+                    var col_div_1 = document.createElement('DIV');
+                    col_div_1.setAttribute('class','col-md-3 col-md-offset-1');
+                    var annual_file = document.createElement('input');
+                    annual_file.setAttribute('type','file');
+                    annual_file.setAttribute('id','a'+result[i]['feed_id']);
+                    col_div_1.append(annual_file);
+                    var col_div_2 = document.createElement('DIV');
+                    col_div_2.setAttribute('class','col-md-3 col-md-offset-4');
+                    var annual_btn_text = document.createTextNode("Send File");
+                    var annual_btn = document.createElement("button");
+                    annual_btn.setAttribute('class','btn btn-info btn-xs');
+                    annual_btn.setAttribute('id','b'+result[i]['feed_id']);
+                    annual_btn.append(annual_btn_text)
+                    col_div_2.append(annual_btn);
+                    annual_div.append(col_div_1);
+                    annual_div.append(col_div_2);
+
+                    var auto_manual_option = document.createElement('DIV');
+                    auto_manual_option.setAttribute('class','row');
+                    var column = document.createElement('DIV');
+                    column.setAttribute('class','col-md-12 text-center');
+                    var a_m_checkbox = document.createElement('input');
+                    a_m_checkbox.setAttribute('type','checkbox'); 
+                    a_m_checkbox.setAttribute('id','s'+result[i]['feed_id']);
+                    a_m_checkbox.setAttribute('checked','checked');
+                    column.append(a_m_checkbox);
+                    auto_manual_option.append(column);
+                    auto_manual_option.append(document.createElement('br'));
+
+                    var auto_manual_div = document.createElement('DIV');
+                    auto_manual_div.setAttribute('class','row');
+                    var col_1 = document.createElement('DIV');
+                    col_1.setAttribute('class','col-md-1');
+                    var all_checkox = document.createElement('input');
+                    all_checkox.setAttribute('type','checkbox');
+                    all_checkox.setAttribute('id','all'+result[i]['feed_id']);
+                    col_1.append(document.createTextNode('All '));
+                    col_1.append(all_checkox);
+
+                    var col_2 = document.createElement('DIV');
+                    col_2.setAttribute('class','col-md-1');
+                    var r_radio = document.createElement('input');
+                    r_radio.setAttribute('type','checkbox');
+                    r_radio.setAttribute('id','r'+result[i]['feed_id']);
+                    col_2.append(document.createTextNode('R '));
+                    col_2.append(r_radio);
+
+                    var col_3 = document.createElement('DIV');
+                    col_3.setAttribute('class','col-md-1');
+                    var y_radio = document.createElement('input');
+                    y_radio.setAttribute('type','checkbox');
+                    y_radio.setAttribute('id','y'+result[i]['feed_id']);
+                    col_3.append(document.createTextNode('Y '));
+                    col_3.append(y_radio);
+
+                    var col_4 = document.createElement('DIV');
+                    col_4.setAttribute('class','col-md-1');
+                    var b_radio = document.createElement('input');
+                    b_radio.setAttribute('type','checkbox');
+                    b_radio.setAttribute('id','bl'+result[i]['feed_id']);
+                    col_4.append(document.createTextNode('B '));
+                    col_4.append(b_radio);
+                    
+                    var col_9 = document.createElement('DIV');
+                    col_9.setAttribute('class','col-md-3');
+
+                    var col_6 = document.createElement('DIV');
+                    col_6.setAttribute('class','col-md-1');
+                    var r_radio = document.createElement('input');
+                    r_radio.setAttribute('type','checkbox');
+                    r_radio.setAttribute('id','dr'+result[i]['feed_id']);
+                    col_6.append(document.createTextNode('DimR '));
+                    col_6.append(r_radio);
+
+                    var col_7 = document.createElement('DIV');
+                    col_7.setAttribute('class','col-md-1');
+                    var r_radio = document.createElement('input');
+                    r_radio.setAttribute('type','checkbox');
+                    r_radio.setAttribute('id','dy'+result[i]['feed_id']);
+                    col_7.append(document.createTextNode('DimY '));
+                    col_7.append(r_radio);
+
+                    var col_8 = document.createElement('DIV');
+                    col_8.setAttribute('class','col-md-1');
+                    var r_radio = document.createElement('input');
+                    r_radio.setAttribute('type','checkbox');
+                    r_radio.setAttribute('id','db'+result[i]['feed_id']);
+                    col_8.append(document.createTextNode('DimB '));
+                    col_8.append(r_radio);
+
+                    var send_div = document.createElement('div');
+                    // send_form.setAttribute('id','send'+result[i]['feed_id']);
+                    // send_form.setAttribute('method','get');
+                    // send_form.setAttribute('action','/generate_prog/');
+                    var hidden_feeder = document.createElement('input');
+                    hidden_feeder.setAttribute('type','hidden');
+                    hidden_feeder.setAttribute('id','hf'+result[i]['feed_id']);
+                    hidden_feeder.setAttribute('name','hidden_feeder');
+                    var hidden_mode = document.createElement('input');
+                    hidden_mode.setAttribute('type','hidden');
+                    hidden_mode.setAttribute('id','hm'+result[i]['feed_id']);
+                    hidden_mode.setAttribute('name','mode');
+                    var hidden_code = document.createElement('input');
+                    hidden_code.setAttribute('type','hidden');
+                    hidden_code.setAttribute('id','hc'+result[i]['feed_id']);
+                    hidden_code.setAttribute('name','output_code');
+                    
+                    var auto_btn = document.createElement("input");
+                    auto_btn.setAttribute('type','button');
+                    auto_btn.setAttribute('class','btn btn-info btn-xs');
+                    auto_btn.setAttribute('id','auto'+result[i]['feed_id']);
+                    auto_btn.setAttribute('value','Send File');
+                    send_div.append(hidden_feeder);
+                    send_div.append(hidden_mode);
+                    send_div.append(hidden_code);
+                    send_div.append(auto_btn);
+                    col_9.append(send_div);
+                    
+                    auto_manual_div.append(col_1);
+                    auto_manual_div.append(col_2);
+                    auto_manual_div.append(col_3);
+                    auto_manual_div.append(col_4);
+                    // auto_manual_div.append(col_5);
+                    auto_manual_div.append(col_6);
+                    auto_manual_div.append(col_7);
+                    auto_manual_div.append(col_8);
+                    auto_manual_div.append(col_9);
+
+
+                    tabBody=document.getElementById("control_table_body");
+                    row=document.createElement("tr");
+                    row.setAttribute("id",result[i]['feed_id']);
+                    cell1 = document.createElement("td");
+                    cell2 = document.createElement("td");
+                    cell3 = document.createElement("td");
+                    cell4 = document.createElement("td");
+                 
+
+                    cell1.appendChild(sr_no);
+                    cell2.appendChild(feeder_name);
+                    cell3.appendChild(annual_div);
+                    cell4.append(auto_manual_option);
+                    cell4.appendChild(auto_manual_div);
+
+                    row.appendChild(cell1);
+                    row.appendChild(cell2);
+                    row.appendChild(cell3);
+                    row.appendChild(cell4);
+                  
+
+                    tabBody.appendChild(row);
+                    $('#s'+result[i]['feed_id']).bootstrapToggle({
+                      on: 'Auto',
+                      off: 'Manual',
+                      size:'mini',
+                      onstyle: 'info'
+                    });
+
+                    $("#all"+result[i]['feed_id']).prop('disabled',true);
+                    $("#r"+result[i]['feed_id']).prop('disabled',true);
+                    $("#y"+result[i]['feed_id']).prop('disabled',true);
+                    $("#bl"+result[i]['feed_id']).prop('disabled',true);
+
+                    $("#dr"+result[i]['feed_id']).prop('disabled',true);
+                    $("#dy"+result[i]['feed_id']).prop('disabled',true);
+                    $("#db"+result[i]['feed_id']).prop('disabled',true);
+                    $("#hm"+result[i]['feed_id']).val("55");
+
+                    a_m_checkbox.onchange = function(){
+                        var check_id = $(this).attr('id');
+                        var feedid =  check_id.slice( 1 );
+                        if($(this).prop("checked") == true){
+                            $("#hm"+feedid).val("55");
+                            $("#all"+feedid).prop('disabled',true);
+                            $("#r"+feedid).prop('disabled',true);
+                            $("#y"+feedid).prop('disabled',true);
+                            $("#bl"+feedid).prop('disabled',true);
+                            $("#dr"+feedid).prop('disabled',true);
+                            $("#dy"+feedid).prop('disabled',true);
+                            $("#db"+feedid).prop('disabled',true);
+                        }
+                        else{
+                            $("#hm"+feedid).val("AA");
+                            $("#all"+feedid).prop('disabled',false);
+                            $("#r"+feedid).prop('disabled',false);
+                            $("#y"+feedid).prop('disabled',false);
+                            $("#bl"+feedid).prop('disabled',false);
+                            $("#dr"+feedid).prop('disabled',false);  
+                            $("#dy"+feedid).prop('disabled',false);  
+                            $("#db"+feedid).prop('disabled',false);
+                        }
+                    }
+                    all_checkox.onchange = function(){
+                        var all_id = $(this).attr('id');
+                        var feedid =  all_id.slice( 3 );
+                        if($(this).prop("checked") == true){
+                            $("#r"+feedid).prop('disabled',true);
+                            $("#y"+feedid).prop('disabled',true);
+                            $("#bl"+feedid).prop('disabled',true);
+                            $("#dr"+feedid).prop('disabled',true);
+                            $("#dy"+feedid).prop('disabled',true);
+                            $("#db"+feedid).prop('disabled',true);
+                        }
+                        else{
+                            $("#r"+feedid).prop('disabled',false);
+                            $("#y"+feedid).prop('disabled',false);
+                            $("#bl"+feedid).prop('disabled',false);
+                            $("#dr"+feedid).prop('disabled',false);
+                            $("#dy"+feedid).prop('disabled',false);
+                            $("#db"+feedid).prop('disabled',false);
+                        }
+                    }
+
+                    auto_btn.onclick = function(){
+                        var output;
+                        var errors=[];
+                        var auto_btn_id = $(this).attr('id');
+                        var feedid =  auto_btn_id.slice( 4 );
+                        var mode = $("#hm"+feedid).val();
+                        $("#hf"+feedid).val(feedid);
+                        // var binary_mapping = {  '0000': '00', '0001': '01', '0010': '02', '0011': '03', '0100': '04',
+                        //                         '0101': '05', '0110': '06', '0111': '07', '1000': '08', '1001': '09',
+                        //                         '1010': '0A', '1011': '0B', '1100': '0C', '1101': '0D', '1110': '0E',
+                        //                         '1111': '0F'
+                        //                     }; 
+                        if(mode=='AA'){ 
+                            if($("#all"+feedid).is(':checked')){
+                                output = '111111';
+                            }
+                            else{
+                                var b_no ='';
+                                if($("#r"+feedid).is(':checked')){b_no += '1';}else{b_no += '0';}
+                                if($("#y"+feedid).is(':checked')){b_no += '1';}else{b_no += '0';}
+                                if($("#bl"+feedid).is(':checked')){b_no += '1';}else{b_no += '0';}
+                                if($("#dr"+feedid).is(':checked')){b_no += '1';}else{b_no += '0';}
+                                if($("#dy"+feedid).is(':checked')){b_no += '1';}else{b_no += '0';}
+                                if($("#db"+feedid).is(':checked')){b_no += '1';}else{b_no += '0';}
+                                output = b_no;
+                            }
+                        }
+                        else{
+                            output = 'FF';
+                        }
+                        
+                        $("#hc"+feedid).val(output);
+                        $("#hm"+feedid).val(mode);
+                        console.log(output);
+                        console.log(mode);
+                        $('#send'+feedid).submit();
+                        var out_time = $("#output_time").val();
+                        $.ajax(
+                        {
+                            type:'post',
+                            url: "/generate_prog/",
+                            dataType: 'json',
+                            data: { 'feeder_id': feedid,
+                                    'mode': mode,
+                                    'output': output,
+                                    'out_time': out_time
+                                    },
+                            success : function(data)
+                                {   
+                                    if (data['content']['responseCode'] == 200) {
+                                        var message;
+                                        message = data['content']['Message'];
+                                        swal({
+                                            title: "Success!!!",
+                                            text: message,
+                                            type: "success",
+                                        },
+                                        function(){
+                                            //location.reload();
+                                        });
+                                    }else {
+                                        var message;
+                                        message = data['content']['Message'];
+                                        swal("error", message, "error");
+                                    }
+                                    console.log(data)
+                                    
+                                },
+                            error : function(error)
+                                    {
+                                        window.alert(error['responseText'])
+                                    }
+                        });
+                
+
+                    }
+                }
+
+            }
+
+            function DeleteRows() {
+                  var rowCount = control_table.rows.length;
+                  for (var i = rowCount - 1; i > 0; i--) {
+                      control_table.deleteRow(i);
+                  }
+            }
+
+        });
+    </script>
+    {% endblock %}
